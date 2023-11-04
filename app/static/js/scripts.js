@@ -1,6 +1,5 @@
 function removeDomain(url) {
-   // let urlObj = new URL(url);
-   return url.replace(/^.*\/\/[^\/]+/, '')
+   return url.replace(/^.*\/\/[^\/]+/, '').slice(1);
 }
 
 function getURLParam(url, param) {

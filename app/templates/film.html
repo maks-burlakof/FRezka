@@ -10,17 +10,32 @@
       <div class="row g-5 mb-5">
          <div class="col-4">
             <div class="card border-0">
-               <img src="https://static.hdrezka.ac/i/2022/12/8/s631dd866e67bgl98n40v.jpeg" class="card-img-top">
+               <svg id="movieCoverPlaceholder" class="bd-placeholder-img card-img-top" width="100%" height="450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect></svg>
+               <img id="movieCover" src="" class="card-img-top">
             </div>
          </div>
          <div class="text-bold col-8">
-            <h1 style="font-size: 3.5rem;">Интерстеллар</h1>
-            <h2>2014</h2>
-            <h5 class="mt-3" style="color: #e1be0e"><i class="fa-solid fa-star"></i> 5.7</h5>
-            <a class="mt-3 btn btn-orange-g me-1"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
-            <a class="mt-3 btn btn-violet-g"><i class="fa-solid fa-film me-1"></i> HDRezka</a>
-            <div class="mt-4">
-               <h5 style="color: #3ed310"><i class="fa-solid fa-circle-check"></i></h5>
+            <div id="movieInfoPlaceholder">
+               <h1 class="placeholder-glow mb-3">
+                  <span class="placeholder col-8"></span>
+               </h1>
+               <h5 class="placeholder-glow mb-3">
+                  <span class="placeholder col-7 mb-1"></span>
+                  <span class="placeholder col-4 mb-1"></span>
+                  <span class="placeholder col-4 mb-1"></span>
+                  <span class="placeholder col-6 mb-1"></span>
+                  <span class="placeholder col-8"></span>
+               </h5>
+            </div>
+            <h1 id="movieTitle" style="font-size: 3.5rem;"></h1>
+            <h2 id="movieYear"></h2>
+            <h5 class="mt-3" style="color: #e1be0e"><i class="fa-solid fa-star me-2"></i><span id="movieRating"><span class="placeholder col-2"></span></span></h5>
+            <div class="mt-3">
+               <a id="movieKinopoiskBtn" class="btn btn-orange-g me-1"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
+               <a id="movieHdRezkaBtn" class="btn btn-violet-g"><i class="fa-solid fa-film me-1"></i> HDRezka</a>
+            </div>
+            <div class="mt-4 d-none">
+               <h5 id="movieIsAdded" style="color: #3ed310"><i class="fa-solid fa-circle-check"></i></h5>
             </div>
          </div>
       </div>
@@ -67,4 +82,7 @@
          </div>
       </div>
    </div>
+{% endblock %}
+{% block extrajs %}
+   <script src="{{ url_for('static', path='js/movie.js') }}?v=1.0"></script>
 {% endblock %}

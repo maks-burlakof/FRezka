@@ -82,8 +82,12 @@ section {
     border: 0;
     background-color: #1e1b26;
 }
+.movie-card img {
+    border-radius: .8rem;
+}
 .movie-card-caption {
     padding: 3rem 1rem 1rem 1rem;
+    border-radius: .7rem;
     position: absolute;
     width: 100%;
     bottom: 0;
@@ -118,6 +122,15 @@ section {
     background-color: transparent!important;
 }
 
+/* Search */
+#searchInput {
+    background: #FFEFBA;
+    background: -webkit-linear-gradient(to right, #FFFFFF, #FFEFBA);
+    background: linear-gradient(to right, #FFFFFF, #FFEFBA);
+    border: 0;
+}
+
+/* Index */
 #movies-bg {
     position: relative;
 }

@@ -4,6 +4,7 @@ window.addEventListener("load", function(){
       .then(response => response.json())
       .then(data => {
          console.log(data);
+         // TODO: if backed error - create bootstrap alert and return
          let resultsElem = document.querySelector('#searchResultsRezka');
          let resultsHTML = '';
          for (let movie of data) {
