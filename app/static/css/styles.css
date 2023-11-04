@@ -1,0 +1,135 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
+@font-face {
+    font-family: 'Montserrat-Alt1';
+    src: url(../fonts/MontserratAlt1-Black.woff2);
+}
+
+/* Basic */
+body {
+    background-color: black;
+    overflow-x:hidden
+}
+h1, h2, h3, h4, h5, h6, p, a {
+    color: #fff;
+    margin-bottom: 0;
+}
+a {
+    text-decoration: none;
+}
+.text-brand {
+    font-family: 'Montserrat-Alt1';
+    font-size: 4rem;
+    line-height: 4rem;
+}
+.text-bold {
+    font-family: 'Montserrat';
+}
+.form-floating > label {
+    color: #495057;
+    font-weight: 500;
+}
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+}
+section {
+    border-bottom: 8px solid #222;
+}
+
+/* Buttons */
+.btn-danger {
+    background-color: #e50914;
+}
+.btn-orange-g {
+    background: #fc4a1a;
+    background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a);
+    background: linear-gradient(to right, #f7b733, #fc4a1a);
+    color: #fff;
+    border: 0;
+}
+.btn-violet-g {
+    background: #654ea3;
+    background: -webkit-linear-gradient(to right, #eaafc8, #654ea3);
+    background: linear-gradient(to right, #eaafc8, #654ea3);
+    color: #fff;
+    border: 0;
+}
+.btn-dark-g {
+    background: #141E30;
+    background: -webkit-linear-gradient(to right, #243B55, #141E30);
+    background: linear-gradient(to right, #243B55, #141E30);
+    color: #fff;
+    border: 0;
+}
+.btn-funky-g {
+    background: #A770EF;
+    background: -webkit-linear-gradient(145deg, #FDB99B, #CF8BF3, #A770EF);
+    background: linear-gradient(145deg, #FDB99B, #CF8BF3, #A770EF);
+    color: #fff;
+    border: 0;
+}
+.btn-red-g {
+    background: #c2010a;
+    background: -webkit-linear-gradient(to right, #fa3a3a, #c2010a);
+    background: linear-gradient(to right, #fa3a3a, #c2010a);
+    color: #fff;
+    border: 0;
+}
+
+/* Movie card */
+.movie-card {
+    border: 0;
+    background-color: #1e1b26;
+}
+.movie-card-caption {
+    padding: 3rem 1rem 1rem 1rem;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background: linear-gradient(0deg, #232323, 85%, rgba(0, 0, 0, 0));
+}
+.movie-card h6 {
+    color: #ffffff;
+    margin-bottom: .4rem;
+}
+.movie-card p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: .8rem;
+}
+
+/* Movie page */
+.select-group-transparent select {
+    color: #ffffff;
+    background-color: transparent;
+    border: #444 solid;
+    border-radius: 1em;
+    height: auto!important;
+    min-width: 5rem;
+}
+.select-group-transparent option {
+    background: #222;
+}
+.select-group-transparent label {
+    color: #ffffff!important;
+    font-size: .8rem;
+}
+.select-group-transparent label:after {
+    background-color: transparent!important;
+}
+
+#movies-bg {
+    position: relative;
+}
+#movies-bg:before {
+    content: "";
+    background-image: url(../img/bg-hero.jpg);
+    background-size: cover;
+    position: absolute;
+    top: 0px;
+    overflow: hidden;
+    right: -15px;
+    bottom: 0px;
+    left: -13px;
+    opacity: 0.35;
+}

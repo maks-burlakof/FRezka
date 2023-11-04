@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+   <div class="container my-5">
+      <header class="d-flex justify-content-between mb-5">
+         <div class="d-flex alegn-items-center">
+            {% include 'includes/logo.html' %}
+         </div>
+         <a class="btn btn-funky-g align-self-start"><i class="fa-solid fa-user-large"></i></a>
+      </header>
+      <div class="row g-5 mb-5">
+         <div class="col-4">
+            <div class="card border-0">
+               <img src="https://static.hdrezka.ac/i/2022/12/8/s631dd866e67bgl98n40v.jpeg" class="card-img-top">
+            </div>
+         </div>
+         <div class="text-bold col-8">
+            <h1 style="font-size: 3.5rem;">Интерстеллар</h1>
+            <h2>2014</h2>
+            <h5 class="mt-3" style="color: #e1be0e"><i class="fa-solid fa-star"></i> 5.7</h5>
+            <a class="mt-3 btn btn-orange-g me-1"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
+            <a class="mt-3 btn btn-violet-g"><i class="fa-solid fa-film me-1"></i> HDRezka</a>
+            <div class="mt-4">
+               <h5 style="color: #3ed310"><i class="fa-solid fa-circle-check"></i></h5>
+            </div>
+         </div>
+      </div>
+      <div class="text-bold mb-5">
+         <h2 class=" mb-3"><i class="fa-solid fa-play me-2"></i> Смотреть</h2>
+         <div class="d-flex gap-2 mb-2">
+            <div class="form-floating select-group-transparent">
+               <select class="form-select" id="voiceSelect">
+                  <option value="0">Дубляж</option>
+                  <option value="1">укаукаукауакуаука</option>
+               </select>
+               <label for="voiceSelect">Озвучка</label>
+            </div>
+            <div class="form-floating select-group-transparent">
+               <select class="form-select" id="voiceSelect">
+                  <option value="0">1</option>
+                  <option value="1">2</option>
+               </select>
+               <label for="voiceSelect">Сезон</label>
+            </div>
+            <div class="form-floating select-group-transparent">
+               <select class="form-select" id="voiceSelect">
+                  <option value="0">1</option>
+                  <option value="1">2</option>
+               </select>
+               <label for="voiceSelect">Серия</label>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-6">
+               <video width="900" src="{{ url_for('static', path='example.mp4') }}" controls></video>
+            </div>
+         </div>
+         <div class="d-flex">
+            <a href="" class="btn btn-dark-g me-2"><i class="fa-solid fa-download me-1"></i> Скачать</a>
+            <a href="" class="btn btn-dark-g"><i class="fa-regular fa-copy"></i></a>
+         </div>
+      </div>
+      <div class="text-bold">
+         <h2 class="mb-2"><i class="fa-solid fa-film me-2"></i> Другие части</h2>
+         <div class="d-flex flex-column">
+            <a class="mb-1" href="#">Начало</a>
+            <a class="mb-1" href="#">Оппенгеймер</a>
+         </div>
+      </div>
+   </div>
+{% endblock %}
