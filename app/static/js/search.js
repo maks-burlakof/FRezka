@@ -5,6 +5,7 @@ window.addEventListener("load", function(){
       .then(data => {
          console.log(data);
          // TODO: if backed error - create bootstrap alert and return
+
          let resultsElem = document.querySelector('#searchResultsRezka');
          let resultsHTML = '';
          for (let movie of data) {
@@ -20,11 +21,13 @@ window.addEventListener("load", function(){
                </div>
             `;
          }
-         if (data) {
-            resultsElem.innerHTML = `<div class="row g-4">${resultsHTML}</div>`;
-         } else {
+
+         if (data.length === 0) {
             resultsElem.innerHTML = '<p>Результатов не найдено</p>';
+         } else {
+            resultsElem.innerHTML = `<div class="row g-4">${resultsHTML}</div>`;
          }
+
          let placeholderElem = document.querySelector('#searchPlaceholderRezka');
          placeholderElem.classList.add('d-none');
       })
