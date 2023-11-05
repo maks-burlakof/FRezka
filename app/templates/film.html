@@ -40,15 +40,19 @@
       </div>
       <div class="mb-5">
          <h2 class=" mb-2"><i class="fa-solid fa-play me-2"></i> Смотреть</h2>
-         <div id="movieSelects" class="d-flex gap-2 mb-2"></div>
-         <div class="row">
+         <div class="d-flex align-items-center gap-1 mb-2">
+            <div id="movieSelects" class="d-flex align-items-center gap-2"></div>
+            <div id="streamUpdateIconPlace" class="d-flex align-items-center"></div>
+            <div id="movieSelectsQualityPlace" class="d-flex align-items-center"></div>
+         </div>
+         <div class="row mb-2">
             <div class="col-12">
-               <video controls src="{{ url_for('static', path='example.mp4') }}" class="w-100"></video>
+               <video id="moviePlayer" controls src="" class="w-100"></video>
             </div>
          </div>
          <div class="d-flex">
-            <a href="" class="btn btn-dark-g me-2"><i class="fa-solid fa-download me-1"></i> Скачать</a>
-            <a href="" class="btn btn-dark-g"><i class="fa-regular fa-copy"></i></a>
+            <a id="movieDownloadBtn" class="btn btn-dark-g me-2"><i class="fa-solid fa-download me-1"></i> Скачать</a>
+            <a id="movieCopyBtn" style="cursor: pointer;" class="btn btn-dark-g"><i class="fa-regular fa-copy"></i></a>
          </div>
       </div>
       <div id="movieOtherParts" class="d-none">
