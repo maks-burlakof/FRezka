@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+
+from ..oauth2 import get_current_user
 from ..parser.parser import Parser
 
 router = APIRouter(prefix='/api/media', tags=['API Films'])
@@ -6,7 +8,7 @@ parser = Parser()
 
 
 @router.get('/search')
-def get_search_results(q: str):
+def get_search_results(q: str, user: int = Depends(get_current_user)):
     data = parser.search(q)
     return data
 

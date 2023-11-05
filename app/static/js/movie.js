@@ -62,7 +62,7 @@ async function getStream() {
       responseUrl += `&e=${episodeId}`;
    } finally {}
 
-   let response = await fetch(responseUrl);
+   let response = await fetchRequest(responseUrl);
    let data = await response.json();
 
    if (!response.ok) {
@@ -134,7 +134,7 @@ async function fillInfo() {
    rezkaShortUrl = getURLParam(location.href, 'u');
    document.querySelector('#movieHdRezkaBtn').href = 'https://kinopub.me/' + rezkaShortUrl;
 
-   let response = await fetch(`/api/media/info?u=${rezkaShortUrl}`);
+   let response = await fetchRequest(`/api/media/info?u=${rezkaShortUrl}`);
    let data = await response.json();
 
    // If response was unsuccessful
@@ -157,7 +157,7 @@ async function fillInfo() {
             </div>
          </div>
       `;
-      return
+      return;
    }
 
    document.querySelector('#movieCoverPlaceholder').remove();
@@ -222,7 +222,7 @@ async function fillInfo() {
    // Create Kinopoisk button
    let kinopoiskBtn = document.createElement('span');
    kinopoiskBtn.innerHTML = `
-      <a id="movieKinopoiskBtn" target="_blank" class="btn btn-orange-g me-1"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
+      <a id="movieKinopoiskBtn" target="_blank" class="btn bg-orange-g me-1"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
    `;
    document.querySelector('#movieButtons').prepend(kinopoiskBtn);
 }

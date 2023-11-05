@@ -39,41 +39,33 @@ section {
     border-bottom: 8px solid #222;
 }
 
-/* Buttons */
-.btn-danger {
-    background-color: #e50914;
-}
-.btn-orange-g {
-    background: #fc4a1a;
-    background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a);
+/* Buttons, backgrounds */
+.bg-orange-g {
     background: linear-gradient(to right, #f7b733, #fc4a1a);
     color: #fff;
     border: 0;
 }
-.btn-violet-g {
-    background: #654ea3;
-    background: -webkit-linear-gradient(to right, #eaafc8, #654ea3);
+.bg-violet-g {
     background: linear-gradient(to right, #eaafc8, #654ea3);
     color: #fff;
     border: 0;
 }
-.btn-dark-g {
-    background: #141E30;
-    background: -webkit-linear-gradient(to right, #243B55, #141E30);
+.bg-dark-g {
     background: linear-gradient(to right, #243B55, #141E30);
     color: #fff;
     border: 0;
 }
-.btn-funky-g {
-    background: #A770EF;
-    background: -webkit-linear-gradient(145deg, #FDB99B, #CF8BF3, #A770EF);
+.bg-dark-blue-g {
+    background: linear-gradient(to right, #348AC7, #7474BF);
+    color: #fff;
+    border: 0;
+}
+.bg-funky-g {
     background: linear-gradient(145deg, #FDB99B, #CF8BF3, #A770EF);
     color: #fff;
     border: 0;
 }
-.btn-red-g {
-    background: #c2010a;
-    background: -webkit-linear-gradient(to right, #fa3a3a, #c2010a);
+.bg-red-g {
     background: linear-gradient(to right, #fa3a3a, #c2010a);
     color: #fff;
     border: 0;
@@ -153,6 +145,9 @@ section {
     background: linear-gradient(to right, #FFFFFF, #FFEFBA);
     border: 0;
 }
+#searchInputLabel:after {
+    background-color: transparent;
+}
 
 /* Toasts */
 .toast-container>:not(:last-child) {
@@ -172,6 +167,17 @@ section {
 }
 .toast-notification .text-bg-danger {
     background: linear-gradient(to right, #fa3a3a, #c2010a);
+}
+
+/* Modals */
+.modal-content {
+    background: linear-gradient(to right, #243B55, #141E30);
+    border-radius: 2rem;
+    padding: 1.5rem;
+}
+.modal-header {
+    padding-bottom: 0;
+    border: 0;
 }
 
 /* Index */
