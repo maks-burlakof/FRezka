@@ -2,6 +2,7 @@ var rezkaShortUrl = '';
 var seriesInfo = [];
 var streamsQualities = {};
 var isStreamUpdated = false;
+var isStreamUpdating = false;
 
 function needToUpdateStream() {
    isStreamUpdated = false;
@@ -12,7 +13,7 @@ function needToUpdateStream() {
    let updateIcon = document.querySelector('#streamUpdateIcon');
    if (!updateIcon) {
       document.querySelector('#streamUpdateIconPlace').innerHTML = `
-         <span id="streamUpdateIcon" style="color: #dd910e;" class="small ms-3"><i class="fa-solid fa-circle"></i></span>
+         <span id="streamUpdateIcon" style="color: #dd910e;" class="small ms-2 mb-2"><i class="fa-solid fa-circle"></i></span>
       `;
    }
 }
@@ -22,7 +23,9 @@ function changeQuality() {
    let streamUrl = streamsQualities[chosenQualityName];
 
    let player = document.querySelector('#moviePlayer');
-   player.src = streamUrl;
+   let videoSrcElem = document.querySelector('#moviePlayerVideoSrc');
+   videoSrcElem.setAttribute('src', streamUrl);
+   player.load();
 
    let downloadBtn = document.querySelector('#movieDownloadBtn');
    downloadBtn.setAttribute('href', streamUrl);
@@ -31,22 +34,32 @@ function changeQuality() {
    copyBtn.setAttribute('onclick', `navigator.clipboard.writeText('${streamUrl}')`);
 }
 
+function changeQualityResume() {
+   let player = document.querySelector('#moviePlayer');
+   let curtime = player.currentTime;
+   changeQuality();
+   player.currentTime = curtime;
+   player.play();
+}
+
 async function getStream() {
-   let translatorId = undefined;
-   try {
-      translatorId = document.querySelector('#movieSelectsTranslators').value;
-   } catch (e) {
-      return;
-   }
+   isStreamUpdating = true;
+   let responseUrl = `/api/media/stream?u=${rezkaShortUrl}`;
 
    // Update loading icon
    document.querySelector('#streamUpdateIcon').innerHTML = '<i class="fa-solid fa-circle fa-beat-fade"></i>';
 
-   let responseUrl = `/api/media/stream?u=${rezkaShortUrl}&t=${translatorId}`;
+   try {
+      let translatorId = document.querySelector('#movieSelectsTranslators').value;
+      responseUrl += `&t=${translatorId}`;
+   } finally {}
    try {
       let seasonId = document.querySelector('#movieSelectsSeasons').value;
+      responseUrl += `&s=${seasonId}`;
+   } finally {}
+   try {
       let episodeId = document.querySelector('#movieSelectsEpisodes').value;
-      responseUrl += `&s=${seasonId}&e=${episodeId}`;
+      responseUrl += `&e=${episodeId}`;
    } finally {}
 
    let response = await fetch(responseUrl);
@@ -65,14 +78,15 @@ async function getStream() {
    }
 
    document.querySelector('#movieSelectsQualityPlace').innerHTML = `
-      <div id="movieSelectsQualityDiv" class="form-floating select-group-transparent">
-         <select class="form-select" id="movieSelectsQuality" oninput="changeQuality()">${qualityOptionsHTML}</select>
+      <div id="movieSelectsQualityDiv" class="form-floating select-group-transparent mb-2">
+         <select class="form-select" id="movieSelectsQuality" oninput="changeQualityResume()">${qualityOptionsHTML}</select>
          <label for="movieSelectsQuality">Качество</label>
       </div>
    `;
 
    changeQuality();
 
+   isStreamUpdating = false;
    if (!isStreamUpdated) {
       isStreamUpdated = true;
       document.querySelector('#streamUpdateIcon').remove();
@@ -123,16 +137,13 @@ async function fillInfo() {
    let response = await fetch(`/api/media/info?u=${rezkaShortUrl}`);
    let data = await response.json();
 
-   let placeholderInfo = document.querySelector('#movieInfoPlaceholder');
-
    // If response was unsuccessful
    if (!response.ok) {
       let errorMsg = data['detail'];
       // showMessage('danger', `${response.status} ${errorMsg}`);
 
-      let alertElem = document.createElement('div');
-      alertElem.innerHTML = `
-         <div class="alert alert-dark col-8" role="alert">
+      document.querySelector('#movieInfoPlaceholder').innerHTML = `
+         <div class="alert alert-dark col-12 col-lg-10 col-xl-8" role="alert">
             <a style="color: #4d4d4d" data-bs-toggle="collapse" href="#movieAlertCollapse" role="button" aria-expanded="false" aria-controls="movieAlertCollapse">
                <span class="d-flex justify-content-between align-items-center">
                   Не удалось загрузить информацию
@@ -146,24 +157,22 @@ async function fillInfo() {
             </div>
          </div>
       `;
-      placeholderInfo.prepend(alertElem);
       return
    }
 
    document.querySelector('#movieCoverPlaceholder').remove();
-   placeholderInfo.remove();
 
    seriesInfo = data['series_info'];
 
    // Fill movie info
    document.querySelector('#movieCover').src = data['cover_url'];
-   document.querySelector('#movieTitle').innerText = data['title'];
-   document.querySelector('#movieYear').innerText = '-';
+   document.querySelector('#movieTitle').innerHTML = data['title'];
+   document.querySelector('#movieYear').innerHTML = '2023';
    document.querySelector('#movieRating').innerHTML = data['rating_value'];
 
    // Fill translators
    let translatorsSelectHTML = `
-      <div class="form-floating select-group-transparent">
+      <div id="movieSelectsTranslatorsDiv" class="form-floating select-group-transparent me-2 mb-2">
          <select class="form-select" id="movieSelectsTranslators">
    `;
    let translatorsNames = Object.keys(data['translators']);
@@ -179,19 +188,19 @@ async function fillInfo() {
    let movieSelectsElem = document.querySelector('#movieSelects');
    movieSelectsElem.innerHTML = translatorsSelectHTML;
    if (translatorsNames.length < 2) {
-      document.querySelector('#movieSelectsTranslators').classList.add('d-none');
+      document.querySelector('#movieSelectsTranslatorsDiv').classList.add('d-none');
    }
 
    // Create seasons, episodes selects
    if (Object.values(seriesInfo).length > 0) {
       let seasonSelectHTML = `
-         <div class="form-floating select-group-transparent">
+         <div class="form-floating select-group-transparent me-2 mb-2">
             <select class="form-select" id="movieSelectsSeasons"></select>
             <label for="movieSelectsSeasons">Сезон</label>
          </div>
       `;
       let episodeSelectHTML = `
-         <div class="form-floating select-group-transparent">
+         <div class="form-floating select-group-transparent me-2 mb-2">
             <select class="form-select" id="movieSelectsEpisodes"></select>
             <label for="movieSelectsEpisodes">Серия</label>
          </div>
@@ -227,8 +236,12 @@ window.addEventListener("load", async function () {
    document.querySelector('#movieSelectsSeasons').addEventListener('change', () => {
       updateEpisodesSelect();
    });
+   document.querySelector('#movieSelectsEpisodes').addEventListener('change', () => {
+      needToUpdateStream();
+   });
+
    document.querySelector('#moviePlayer').addEventListener('click', () => {
-      if (!isStreamUpdated) {
+      if (!isStreamUpdated && !isStreamUpdating) {
          getStream();
       }
    });

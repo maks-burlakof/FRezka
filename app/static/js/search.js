@@ -10,13 +10,15 @@ window.addEventListener("load", function(){
          let resultsHTML = '';
          for (let movie of data) {
             resultsHTML += `
-               <div class="col-3">
+               <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
                   <div class="card movie-card">
-                     <a href="/film?u=${removeDomain(movie['url'])}"><img src="${movie['cover_url']}" class="card-img-top"></a>
-                     <div class="movie-card-caption">
-                        <h6 class="card-title">${movie['title']}</h6>
-                        <p class="card-text">${movie['year']}, ${movie['country']}, ${movie['genre']}</p>
-                     </div>
+                     <a href="/film?u=${removeDomain(movie['url'])}">
+                        <img src="${movie['cover_url']}" class="card-img-top">
+                        <div class="movie-card-caption">
+                           <h6>${movie['title']}</h6>
+                           <p>${movie['year']}, ${movie['country']}, ${movie['genre']}</p>
+                        </div>
+                     </a>
                   </div>
                </div>
             `;

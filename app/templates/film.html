@@ -1,36 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
-   <div class="container my-5">
-      <header class="d-flex justify-content-between mb-5">
+   <div class="container my-4 my-sm-5">
+      <header class="d-flex justify-content-between align-items-center mb-3 mb-md-5">
          <div class="d-flex alegn-items-center">
             {% include 'includes/logo.html' %}
          </div>
-         <a class="btn btn-funky-g align-self-start"><i class="fa-solid fa-user-large"></i></a>
+         <a class="btn btn-funky-g"><i class="fa-solid fa-user-large"></i></a>
       </header>
-      <div class="row g-5 mb-5">
-         <div class="col-4">
-            <div class="card border-0">
-               <svg id="movieCoverPlaceholder" class="bd-placeholder-img card-img-top" width="100%" height="450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect></svg>
+      <div class="row g-3 g-md-5 mb-5">
+         <div class="offset-2 offset-md-0 col-8 col-md-5 col-xl-4">
+            <div class="card border-0" style="background-color: transparent">
+               <svg id="movieCoverPlaceholder" class="bd-placeholder-img" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect></svg>
                <img id="movieCover" src="" class="card-img-top">
             </div>
          </div>
-         <div class="col-8">
-            <div id="movieInfoPlaceholder">
-               <h1 class="placeholder-glow mb-3">
-                  <span class="placeholder col-8"></span>
-               </h1>
-               <h5 class="placeholder-glow mb-3">
-                  <span class="placeholder col-7 mb-1"></span>
-                  <span class="placeholder col-4 mb-1"></span>
-                  <span class="placeholder col-4 mb-1"></span>
-                  <span class="placeholder col-6 mb-1"></span>
-                  <span class="placeholder col-8"></span>
-               </h5>
-            </div>
-            <h1 id="movieTitle" style="font-size: 3.5rem;"></h1>
-            <h2 id="movieYear"></h2>
-            <h5 class="mt-3" style="color: #e1be0e"><i class="fa-solid fa-star me-2"></i><span id="movieRating"><span class="placeholder-glow"><span class="placeholder col-2"></span></span></span></h5>
-            <div id="movieButtons" class="mt-3">
+         <div class="col-12 col-md-7 col-xl-8">
+            <div id="movieInfoPlaceholder"></div>
+            <h1 class="mb-4" id="movieTitle">
+               <span class="placeholder-glow">
+                  <span class="placeholder col-11"></span>
+                  <span class="placeholder col-9"></span>
+               </span>
+            </h1>
+            <h2 class="mb-2" id="movieYear">
+               <span class="placeholder-glow">
+                  <span class="placeholder col-4"></span>
+               </span>
+            </h2>
+            <h5 class="mb-4" style="color: #e1be0e"><i class="fa-solid fa-star me-2"></i>
+               <span id="movieRating">
+                  <span class="placeholder-glow">
+                     <span class="placeholder col-2"></span>
+                  </span>
+               </span>
+            </h5>
+            <div id="movieButtons">
                <a id="movieHdRezkaBtn" target="_blank" class="btn btn-violet-g"><i class="fa-solid fa-film me-1"></i> HDRezka</a>
             </div>
             <div class="mt-4 d-none">
@@ -39,15 +43,18 @@
          </div>
       </div>
       <div class="mb-5">
-         <h2 class=" mb-2"><i class="fa-solid fa-play me-2"></i> Смотреть</h2>
-         <div class="d-flex align-items-center gap-1 mb-2">
-            <div id="movieSelects" class="d-flex align-items-center gap-2"></div>
+         <h2 class="mb-3"><i class="fa-solid fa-play me-2"></i> Смотреть</h2>
+         <div class="d-flex align-items-center flex-wrap mb-2">
+            <div id="movieSelects" class="d-flex flex-wrap align-items-center"></div>
             <div id="streamUpdateIconPlace" class="d-flex align-items-center"></div>
             <div id="movieSelectsQualityPlace" class="d-flex align-items-center"></div>
          </div>
          <div class="row mb-2">
             <div class="col-12">
-               <video id="moviePlayer" controls src="" class="w-100"></video>
+               <video id="moviePlayer" autoplay controls class="w-100">
+                  <source id="moviePlayerVideoSrc" src="" type='video/mp4'>
+                  Воспроизведение не поддерживается. Скачайте видео.
+               </video>
             </div>
          </div>
          <div class="d-flex">

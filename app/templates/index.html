@@ -1,21 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
    <div class="container-fluid">
-      <section id="movies-bg" class="p-5">
-         <div class="position-relative">
-            <header class="d-flex justify-content-between">
+      <section id="movies-bg" class="py-5 px-lg-5">
+         <div class="container position-relative">
+            <header class="d-flex justify-content-between align-items-center">
                {% include 'includes/logo.html' %}
-               <a class="btn btn-funky-g align-self-start"><i class="fa-solid fa-user-large"></i></a>
+               <a class="btn btn-funky-g"><i class="fa-solid fa-user-large"></i></a>
             </header>
-         </div>
-         <div class="position-relative text-center mt-5">
-            <div class="mx-5 px-5">
-               <h1>Любимые фильмы и сериалы</h1>
-               <p>Без рекламы, без трекеров, с кайфом</p>
-            </div>
-            <div class="row justify-content-center">
-               <div class="col-12 col-lg-6 my-4">
-                  {% include 'includes/search.html' %}
+            <div class="text-center mt-5">
+               <div class="px-2 px-md-5 mx-lg-5 mb-3">
+                  <h1>Любимые фильмы и сериалы</h1>
+               </div>
+               <div class="row justify-content-center">
+                  <div class="col-11 col-sm-10 col-md-8 col-lg-7 col-xl-6 my-4">
+                     {% include 'includes/search.html' %}
+                  </div>
                </div>
             </div>
          </div>
