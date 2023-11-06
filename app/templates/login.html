@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+   <div class="container my-4 my-sm-5">
+      {% with header_title='Войти' %}
+         {% include 'includes/header.html' %}
+      {% endwith %}
+
+      <div class="row justify-content-center">
+         <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+            <div class="rounded-5 bg-dark-g px-4 px-md-5 py-4">
+               <div class="tabs-container mb-3">
+                  <div class="tabs" id="authTabSwitcher" style="background-color: transparent">
+                     <input type="radio" class="tab-1" data-tab="loginTab" data-name="Войти" id="loginRadio" name="tabs" checked />
+                     <label class="tab" for="loginRadio">Войти</label>
+                     <input type="radio" class="tab-2" data-tab="registerTab" data-name="Создать" id="registerRadio" name="tabs" />
+                     <label class="tab" for="registerRadio">Регистрация</label>
+                     <span class="glider"></span>
+                  </div>
+               </div>
+               <div class="tab-pane active" id="loginTab">
+                  <form id="loginForm" class="login-wrapper">
+                     <div class="login-input-group input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-at"></i></span>
+                        <div class="form-floating">
+                           <input type="text" name="username" class="form-control" id="loginUsername" placeholder="Имя пользователя" minlength="4" maxlength="25" required>
+                           <label for="loginUsername">Имя пользователя</label>
+                        </div>
+                     </div>
+                     <div class="login-input-group input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                        <div class="form-floating">
+                           <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Пароль" minlength="5" maxlength="100" required>
+                           <label for="loginPassword">Пароль</label>
+                        </div>
+                     </div>
+                     <div id="loginErrorContainer" class="d-none">
+                        <div class="d-flex text-danger">
+                           <span class="fs-4 me-2"><i class="fa-solid fa-circle-exclamation"></i></span>
+                           <span class="small align-self-center" id="loginErrorText"></span>
+                        </div>
+                     </div>
+                     <button type="submit" class="btn login-submit mt-3 mb-4">Войти</button>
+                     <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="loginRemember">
+                        <label class="form-check-label small ms-2" for="loginRemember">Запомнить меня</label>
+                     </div>
+                     <hr class="mt-4">
+                     <div class="d-flex justify-content-center">
+                        <a class="small login-link">Забыли пароль?</a>
+                     </div>
+                  </form>
+               </div>
+               <div class="tab-pane" id="registerTab">
+                  <form id="registerForm" class="login-wrapper">
+                     <div class="login-input-group input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-at"></i></span>
+                        <div class="form-floating">
+                           <input type="text" name="username" class="form-control" id="registerUsername" placeholder="Имя пользователя" minlength="4" maxlength="25" required>
+                           <label for="registerUsername">Имя пользователя</label>
+                        </div>
+                     </div>
+                     <div class="login-input-group input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                        <div class="form-floating">
+                           <input type="password" name="password1" class="form-control" id="registerPassword1" placeholder="Пароль" minlength="5" maxlength="100" required>
+                           <label for="registerPassword1">Пароль</label>
+                        </div>
+                     </div>
+                     <div class="login-input-group input-group mb-4">
+                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                        <div class="form-floating">
+                           <input type="password" name="password2" class="form-control" id="registerPassword2" placeholder="Повторите пароль" minlength="5" maxlength="100" required>
+                           <label for="registerPassword2">Повторите пароль</label>
+                        </div>
+                     </div>
+                     <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="registerAgree">
+                        <label class="form-check-label small ms-2" for="registerAgree">Согласен с <a class="login-link">политикой обработки персональных данных</a>.</label>
+                     </div>
+                     <div id="registerErrorContainer" class="d-none">
+                        <div class="d-flex text-danger">
+                           <span class="fs-4 me-2"><i class="fa-solid fa-circle-exclamation"></i></span>
+                           <span class="small align-self-center" id="registerErrorText"></span>
+                        </div>
+                     </div>
+                     <div id="registerSuccessContainer" class="d-none">
+                        <div class="d-flex">
+                           <span class="fs-4 me-2"><i class="fa-regular fa-circle-check"></i></span>
+                           <span class="small align-self-center" id="registerSuccessText"></span>
+                        </div>
+                     </div>
+                     <button type="submit" class="btn login-submit mt-3 mb-2">Регистрация</button>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+{% endblock %}
+{% block extrajs %}
+	<script src="{{ url_for('static', path='js/user.js') }}?v=1.0"></script>
+   <script>
+      $(document).ready(function() {
+         redirectIsLogged();
+      });
+      initializeAuthForm();
+   </script>
+{% endblock %}

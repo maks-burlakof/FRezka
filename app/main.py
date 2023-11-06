@@ -3,7 +3,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import models
 from .database import engine
-from .routers import pages, media, auth
+from .routers import pages, media, auth, users
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -13,6 +13,7 @@ app.mount('/static', StaticFiles(directory='app/static/'), name='static')
 
 app.include_router(pages.router)
 app.include_router(media.router)
+app.include_router(users.router)
 app.include_router(auth.router)
 
 

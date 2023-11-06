@@ -1,12 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
    <div class="container my-4 my-sm-5">
-      <header class="d-flex justify-content-between align-items-center mb-3 mb-md-5">
-         <div class="d-flex alegn-items-center">
-            {% include 'includes/logo.html' %}
-         </div>
-         <a class="btn bg-funky-g"><i class="fa-solid fa-user-large"></i></a>
-      </header>
+      {% include 'includes/header.html' %}
       <div class="row g-3 g-md-5 mb-5">
          <div class="offset-2 offset-md-0 col-8 col-md-5 col-xl-4">
             <div class="card border-0" style="background-color: transparent">

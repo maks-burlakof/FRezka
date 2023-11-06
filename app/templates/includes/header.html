@@ -1,0 +1,17 @@
+<header class="d-flex justify-content-between mb-4 mb-sm-5">
+   <div class="d-flex flex-column flex-md-row">
+      {% include 'includes/logo.html' %}
+      <div class="d-flex">
+         {% if header_title %}
+            <h1 class="text-brand mx-3">·</h1>
+         {% endif %}
+         <h1 class="text-brand" id="headerTitle">{{ header_title }}</h1>
+      </div>
+   </div>
+   <button type="button" class="btn bg-funky-g align-self-start" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-user-large"></i></button>
+   <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end user-dropdown bg-dark-g">
+      <li><button class="dropdown-item" type="button">Профиль</button></li>
+      <li><button class="dropdown-item" type="button">Another action</button></li>
+      <li><button class="dropdown-item" type="button">Something else here</button></li>
+   </ul>
+</header>

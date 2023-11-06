@@ -1,7 +1,7 @@
 async function getSearchResults() {
    let searchedStr = document.querySelector('#searchInput').value;
    let response = await fetchRequest(`/api/media/search?q=${searchedStr}`);
-   let data = response.json();
+   let data = await response.json();
 
    if (!response.ok) {
       showMessage('danger', `${response.status} ${data['detail']}`);

@@ -8,38 +8,37 @@ function getURLParam(url, param) {
    return searchParams.get(param);
 }
 
-async function showMessage(type, HTMLText) {
-   let messagesContainer = document.querySelector('#messagesContainer');
-   let newMsgElem = document.createElement('div');
-   newMsgElem.classList.add('toast', 'mb-1', `text-bg-${type}`);
-   newMsgElem.setAttribute('role', 'alert');
-   newMsgElem.setAttribute('aria-live', 'assertive');
-   newMsgElem.setAttribute('aria-atomic', 'true');
-   newMsgElem.innerHTML = `
+function showMessage(type, HTMLText) {
+   let newMsgElem = $('<div>').addClass(`toast mb-1 text-bg-${type}`).attr('role', 'alert').attr('aria-live', 'assertive').attr('aria-atomic', 'true');
+   newMsgElem.html(`
       <div class="d-flex justify-content-between align-items-center">
          <div class="toast-body">${HTMLText}</div>
          <button type="button" class="btn-close btn-close-white me-3" data-bs-dismiss="toast" aria-label="Закрыть"></button>
       </div>
-   `;
-   messagesContainer.appendChild(newMsgElem);
+   `);
+
+   let messagesContainer = $('#messagesContainer');
+   messagesContainer.append(newMsgElem);
    bootstrap.Toast.getOrCreateInstance(newMsgElem).show();
-   await new Promise(resolve => setTimeout(resolve, 10000));
-   messagesContainer.removeChild(newMsgElem);
+   setTimeout(function () {
+      newMsgElem.remove();
+   }, 10000);
 }
 
-async function fetchRequest(url, method = "GET") {
+async function fetchRequest(url, method = "GET", ignoreAuth = false) {
    let response = await fetch(url, {
       method: method,
       headers: {
-         "Authorization": "Bearer ",  // TODO: read cookie token
+         "Content-Type": "application/json",
+         "Authorization": `Bearer ${Cookies.get('access_token')}`,
       },
    });
 
-   if (!response.ok) {
+   if (!response.ok && !ignoreAuth) {
       let errorMsg = (await response.json())['detail'];
 
       if (response.status === 401) {
-         document.querySelector('#modalPlace').innerHTML = `
+         $('#modalPlace').html(`
             <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
                <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content">
@@ -54,15 +53,12 @@ async function fetchRequest(url, method = "GET") {
                      </div>
                      <div class="modal-body pt-0">
                         <img class="img-fluid p-4 p-sm-5" src="static/img/sign-up.svg">
-                        <div class="d-flex">
-                           <a class="btn bg-dark-blue-g col-6 me-2" href="/login">Войти</a>
-                           <a class="btn bg-dark-blue-g col-6" href="/register">Регистрация</a>
-                        </div>
+                        <a class="btn bg-dark-blue-g w-100" href="/login">Войти</a>
                      </div>
                   </div>
                </div>
             </div>
-         `;
+         `);
          let loginModal = new bootstrap.Modal(document.querySelector('#loginModal'));
          loginModal.show();
       }

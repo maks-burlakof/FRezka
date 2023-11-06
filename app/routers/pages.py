@@ -13,6 +13,14 @@ def index(request: Request):
     return templates.TemplateResponse('index.html', context)
 
 
+@router.get('/login')
+def login(request: Request):
+    context = {
+        'request': request,
+    }
+    return templates.TemplateResponse('login.html', context)
+
+
 @router.get('/search')
 def search(request: Request):
     context = {
@@ -28,3 +36,11 @@ def film_page(request: Request):
         'request': request,
     }
     return templates.TemplateResponse('film.html', context)
+
+
+@router.get('/profile')
+def profile(request: Request):
+    context = {
+        'request': request,
+    }
+    return templates.TemplateResponse('profile.html', context)

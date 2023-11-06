@@ -20,7 +20,7 @@ class UserCreate(BaseModel):
     @field_validator('username')
     @classmethod
     def validate_username(cls, username: str) -> str:
-        if not 4 <= len(username) <= 25:
+        if not 4 <= len(username) <= 25:  # Change also html form
             raise ValueError('Username must be at least 4 and no more than 25 characters long')
         if not re.match(r'^[A-Za-z0-9\._-]+$', username):
             raise ValueError('Username must consist of Latin letters, digits, .-_ characters')
@@ -30,7 +30,7 @@ class UserCreate(BaseModel):
 
     @field_validator('password')
     @classmethod
-    def validate_username(cls, password: str) -> str:
+    def validate_password(cls, password: str) -> str:
         if not 5 <= len(password) <= 100:
             raise ValueError('Password must be at least 5 and no more than 100 characters long')
         return password
