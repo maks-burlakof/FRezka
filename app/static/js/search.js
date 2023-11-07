@@ -1,14 +1,12 @@
 async function getSearchResults() {
-   let searchedStr = document.querySelector('#searchInput').value;
-   let response = await fetchRequest(`/api/media/search?q=${searchedStr}`);
-   let data = await response.json();
+   let searchedStr = $('#searchInput').val();
+   let [response, data] = await fetchRequest(`/api/media/search?q=${searchedStr}`);
 
    if (!response.ok) {
       showMessage('danger', `${response.status} ${data['detail']}`);
       return;
    }
 
-   let resultsElem = document.querySelector('#searchResultsRezka');
    let resultsHTML = '';
    for (let movie of data) {
       resultsHTML += `
@@ -27,13 +25,13 @@ async function getSearchResults() {
    }
 
    if (data.length === 0) {
-      resultsElem.innerHTML = '<p>Результатов не найдено</p>';
+      $('#searchResultsRezka').html('<p>Результатов не найдено</p>');
    } else {
-      resultsElem.innerHTML = `<div class="row g-4">${resultsHTML}</div>`;
+      $('#searchResultsRezka').html(`<div class="row g-4">${resultsHTML}</div>`);
    }
-   document.querySelector('#searchPlaceholderRezka').remove();
+   $('#searchPlaceholderRezka').remove();
 }
 
-window.addEventListener("load", function(){
-   getSearchResults();
+$(document).ready(async function() {
+   await getSearchResults();
 });

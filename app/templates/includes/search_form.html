@@ -1,7 +1,7 @@
 <form method="get" action="search">
    <div class="input-group">
       <div class="form-floating">
-         <input name="q" id="searchInput" type="text" value="{{ q }}" class="form-control" placeholder="Поиск" maxlength="60">
+         <input name="q" id="searchInput" type="text" value="{{ q|default('', true) }}" class="form-control" placeholder="Поиск" maxlength="60">
          <label id="searchInputLabel" for="searchInput">Поиск</label>
       </div>
       <button class="btn bg-red-g fs-5 px-4" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>

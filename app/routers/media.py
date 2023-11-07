@@ -14,7 +14,7 @@ def get_search_results(q: str, user=Depends(get_current_user)):
 
 
 @router.get('/info')
-def get_film_info(u: str):
+def get_film_info(u: str, user=Depends(get_current_user)):
     try:
         data = parser.film_info(url=u)
     except Exception as e:
@@ -24,7 +24,7 @@ def get_film_info(u: str):
 
 
 @router.get('/stream')
-def get_stream(u: str, t: int, s: int = None, e: int = None):
+def get_stream(u: str, t: int, s: int = None, e: int = None, user=Depends(get_current_user)):
     try:
         data = parser.stream(url=u, translation=t, season=s, episode=e)
     except Exception as e:

@@ -6,32 +6,25 @@ var isStreamUpdating = false;
 
 function needToUpdateStream() {
    isStreamUpdated = false;
-   let qualitySelect = document.querySelector('#movieSelectsQualityDiv');
+   let qualitySelect = $('#movieSelectsQualityDiv');
    if (qualitySelect) {
       qualitySelect.remove();
    }
-   let updateIcon = document.querySelector('#streamUpdateIcon');
-   if (!updateIcon) {
-      document.querySelector('#streamUpdateIconPlace').innerHTML = `
-         <span id="streamUpdateIcon" style="color: #dd910e;" class="small ms-2 mb-2"><i class="fa-solid fa-circle"></i></span>
-      `;
-   }
+   $('#streamUpdateIconPlace').html(`
+      <span id="streamUpdateIcon" style="color: #dd910e;" class="small ms-2 mb-2"><i class="fa-solid fa-circle"></i></span>
+   `);
 }
 
 function changeQuality() {
-   let chosenQualityName = document.querySelector('#movieSelectsQuality').value;
+   let chosenQualityName = $('#movieSelectsQuality').val();
    let streamUrl = streamsQualities[chosenQualityName];
 
+   $('#moviePlayerVideoSrc').attr('src', streamUrl);
    let player = document.querySelector('#moviePlayer');
-   let videoSrcElem = document.querySelector('#moviePlayerVideoSrc');
-   videoSrcElem.setAttribute('src', streamUrl);
    player.load();
 
-   let downloadBtn = document.querySelector('#movieDownloadBtn');
-   downloadBtn.setAttribute('href', streamUrl);
-   downloadBtn.setAttribute('download', streamUrl.slice(-9));
-   let copyBtn = document.querySelector('#movieCopyBtn');
-   copyBtn.setAttribute('onclick', `navigator.clipboard.writeText('${streamUrl}')`);
+   $('#movieDownloadBtn').attr('href', streamUrl).attr('download', streamUrl.slice(-9));
+   $('#movieCopyBtn').attr('onclick', `navigator.clipboard.writeText('${streamUrl}')`);
 }
 
 function changeQualityResume() {
@@ -47,23 +40,16 @@ async function getStream() {
    let responseUrl = `/api/media/stream?u=${rezkaShortUrl}`;
 
    // Update loading icon
-   document.querySelector('#streamUpdateIcon').innerHTML = '<i class="fa-solid fa-circle fa-beat-fade"></i>';
+   $('#streamUpdateIcon').html('<i class="fa-solid fa-circle fa-beat-fade"></i>');
 
-   try {
-      let translatorId = document.querySelector('#movieSelectsTranslators').value;
-      responseUrl += `&t=${translatorId}`;
-   } finally {}
-   try {
-      let seasonId = document.querySelector('#movieSelectsSeasons').value;
-      responseUrl += `&s=${seasonId}`;
-   } finally {}
-   try {
-      let episodeId = document.querySelector('#movieSelectsEpisodes').value;
-      responseUrl += `&e=${episodeId}`;
-   } finally {}
+   let translatorId = $('#movieSelectsTranslators').val();
+   responseUrl += translatorId ? `&t=${translatorId}` : '';
+   let seasonId = $('#movieSelectsSeasons').val();
+   responseUrl += seasonId ? `&s=${seasonId}` : '';
+   let episodeId = $('#movieSelectsEpisodes').val();
+   responseUrl += episodeId ? `&e=${episodeId}` : '';
 
-   let response = await fetchRequest(responseUrl);
-   let data = await response.json();
+   let [response, data] = await fetchRequest(responseUrl);
 
    if (!response.ok) {
       showMessage('danger', `${response.status} ${data['detail']}`);
@@ -134,10 +120,8 @@ async function fillInfo() {
    rezkaShortUrl = getURLParam(location.href, 'u');
    document.querySelector('#movieHdRezkaBtn').href = 'https://kinopub.me/' + rezkaShortUrl;
 
-   let response = await fetchRequest(`/api/media/info?u=${rezkaShortUrl}`);
-   let data = await response.json();
+   let [response, data] = await fetchRequest(`/api/media/info?u=${rezkaShortUrl}`);
 
-   // If response was unsuccessful
    if (!response.ok) {
       let errorMsg = data['detail'];
       // showMessage('danger', `${response.status} ${errorMsg}`);
@@ -230,17 +214,17 @@ async function fillInfo() {
 window.addEventListener("load", async function () {
    await fillInfo();
 
-   document.querySelector('#movieSelectsTranslators').addEventListener('change', () => {
+   $('#movieSelectsTranslators').change(function () {
       updateSeasonsSelect();
    });
-   document.querySelector('#movieSelectsSeasons').addEventListener('change', () => {
+   $('#movieSelectsSeasons').change(function () {
       updateEpisodesSelect();
    });
-   document.querySelector('#movieSelectsEpisodes').addEventListener('change', () => {
+   $('#movieSelectsEpisodes').change(function () {
       needToUpdateStream();
    });
 
-   document.querySelector('#moviePlayer').addEventListener('click', () => {
+   $('#moviePlayer').click(function () {
       if (!isStreamUpdated && !isStreamUpdating) {
          getStream();
       }

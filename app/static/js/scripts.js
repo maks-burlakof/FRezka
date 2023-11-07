@@ -8,6 +8,10 @@ function getURLParam(url, param) {
    return searchParams.get(param);
 }
 
+function makeNextURLParam(location) {
+   return location.pathname + location.search + location.hash;
+}
+
 function showMessage(type, HTMLText) {
    let newMsgElem = $('<div>').addClass(`toast mb-1 text-bg-${type}`).attr('role', 'alert').attr('aria-live', 'assertive').attr('aria-atomic', 'true');
    newMsgElem.html(`
@@ -33,11 +37,12 @@ async function fetchRequest(url, method = "GET", ignoreAuth = false) {
          "Authorization": `Bearer ${Cookies.get('access_token')}`,
       },
    });
+   let data = await response.json();
 
-   if (!response.ok && !ignoreAuth) {
-      let errorMsg = (await response.json())['detail'];
+   if (!response.ok) {
+      let errorMsg = data['detail'];
 
-      if (response.status === 401) {
+      if (response.status === 401 && !ignoreAuth) {
          $('#modalPlace').html(`
             <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
                <div class="modal-dialog modal-dialog-centered">
@@ -52,8 +57,8 @@ async function fetchRequest(url, method = "GET", ignoreAuth = false) {
                         </div>
                      </div>
                      <div class="modal-body pt-0">
-                        <img class="img-fluid p-4 p-sm-5" src="static/img/sign-up.svg">
-                        <a class="btn bg-dark-blue-g w-100" href="/login">Войти</a>
+                        <img class="img-fluid p-4" src="static/img/sign-up.svg">
+                        <a class="btn bg-dark-blue-g w-100 py-3 rounded-5" href="/login?next=${makeNextURLParam(location)}">Войти</a>
                      </div>
                   </div>
                </div>
@@ -63,5 +68,5 @@ async function fetchRequest(url, method = "GET", ignoreAuth = false) {
          loginModal.show();
       }
    }
-   return response;
+   return [response, data];
 }

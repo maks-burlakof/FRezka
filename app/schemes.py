@@ -3,15 +3,6 @@ from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, field_validator
 
-# Users
-
-# class User(BaseModel):
-#     username: str
-#     password: str
-#     date_joined: datetime
-#     is_active: bool
-#     is_admin: bool
-
 
 class UserCreate(BaseModel):
     username: str
@@ -45,12 +36,6 @@ class UserOut(BaseModel):
         orm_mode = True
 
 
-# class UserLogin(BaseModel):
-# 	email: EmailStr
-# 	password: str
-
-# Token
-
 class TokenOut(BaseModel):
     access_token: str
     token_type: str
@@ -59,7 +44,6 @@ class TokenOut(BaseModel):
 class TokenData(BaseModel):
     id: int
 
-# Movies
 
 class Movie(BaseModel):
     title: str

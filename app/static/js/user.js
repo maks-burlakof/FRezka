@@ -1,8 +1,14 @@
 async function redirectIsLogged() {
-   let responseUser = await fetchRequest('/api/user/', "GET", true);
+   let [responseUser, user] = await fetchRequest('/api/user/', "GET", true);
    if (responseUser.ok) {
       $(location).attr('href', '/profile/');
    }
+}
+
+function logout() {
+   Cookies.remove('access_token');
+   location.reload();
+   showMessage('danger', 'Вы вышли');
 }
 
 function initializeAuthForm() {
@@ -40,7 +46,9 @@ function initializeAuthForm() {
       }
 
       Cookies.set('access_token', data['access_token'], { expires: 365 });
-      $(location).attr('href', '/profile/');
+      let nextURL = getURLParam(location.href ,'next');
+      console.log(nextURL); // TODO: debug only
+      $(location).attr('href', nextURL ? nextURL : '/profile/');
    })
 
    $('#registerForm').submit(async function (e) {
@@ -86,3 +94,18 @@ function initializeAuthForm() {
       $('#registerSuccessText').text(`Поздравляю! Теперь можешь войти под своим ником @${$('#registerUsername').val()}!`);
    })
 }
+
+$(document).ready(async function() {
+   let [responseUser, user] = await fetchRequest('/api/user/', "GET", true);
+   if (responseUser.ok) {
+      $('#userMenu').html(`
+         <li><a href="/profile/" class="dropdown-item" style="color: #A8E063FF"><i class="fa-solid fa-at me-1"></i>${user['username']}</a></li>
+         <li><a class="dropdown-item">Another action</a></li>
+         <li><button class="dropdown-item" type="button" onclick="logout()" style="opacity: 70%">Выйти</button></li>
+      `);
+   } else {
+      $('#userMenu').html(`
+         <li><a class="dropdown-item" href="/login?next=${makeNextURLParam(location)}">Войти</a></li>
+      `);
+   }
+});

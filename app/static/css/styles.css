@@ -352,10 +352,21 @@ section {
 }
 
 /* User dropdown */
-.user-dropdown {
+#userMenu {
     border-radius: 1rem;
+    background: linear-gradient(to right, #243B55, #141E30);
 }
-
+#userMenu.show {
+    border-top-right-radius: 0;
+    transform: translateY(5px);
+}
+#userMenuBtn:active,
+#userMenuBtn:focus {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    background: linear-gradient(to right, #243B55, #141E30);
+    color: #fff;
+}
 
 
 
