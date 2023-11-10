@@ -9,6 +9,21 @@ class Parser:
         self.DOMAIN = 'https://kinopub.me/'
         self.HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
 
+    def _get_dict_info(self, rezka: HdRezkaApi, url: str):
+        return {
+            'id': rezka.id,
+            'title': rezka.name,
+            'rezka_url': url,
+            'year': rezka.year,
+            'type': str(rezka.type),
+            'cover_url': rezka.thumbnail,
+            'rating_value': rezka.rating.value,
+            'rating_votes': rezka.rating.votes,
+            'translators': rezka.translators,
+            'other_parts': rezka.otherParts,
+            'series_info': rezka.seriesInfo,
+        }
+
     def search(self, q: str):
         url = self.DOMAIN + 'search/?do=search&subaction=search&q=' + q
         page = requests.get(url, headers=self.HEADERS)
@@ -39,25 +54,13 @@ class Parser:
         return response
 
     def film_info(self, url: str):
-        full_url = self.DOMAIN + url
-        rezka = HdRezkaApi(full_url)
-        return {
-            'title': rezka.name,
-            'url': full_url,
-            'type': str(rezka.type),
-            'cover_url': rezka.thumbnail,
-            'rating_value': rezka.rating.value,
-            'rating_votes': rezka.rating.votes,
-            'translators': rezka.translators,
-            'other_parts': rezka.otherParts,
-            'series_info': rezka.seriesInfo,
-        }
+        rezka = HdRezkaApi(self.DOMAIN + url)
+        return self._get_dict_info(rezka, url)
 
     def stream(self, url: str, translation: int, season: int = None, episode: int = None):
-        full_url = self.DOMAIN + url
-        rezka = HdRezkaApi(full_url)
+        rezka = HdRezkaApi(self.DOMAIN + url)
 
         if rezka.type == 'tv_series' and not season and not episode:
             raise ValueError('The season and episode for series must be integers')
 
-        return rezka.getStream(season, episode, translation).videos
+        return rezka.getStream(season, episode, translation).videos, self._get_dict_info(rezka, url)

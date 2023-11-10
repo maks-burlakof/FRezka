@@ -1,5 +1,5 @@
 async function redirectIsLogged() {
-   let [responseUser, user] = await fetchRequest('/api/user/', "GET", true);
+   let [responseUser, user] = await fetchRequest('/api/user/', true);
    if (responseUser.ok) {
       $(location).attr('href', '/profile/');
    }
@@ -95,9 +95,8 @@ function initializeAuthForm() {
    })
 }
 
-$(document).ready(async function() {
-   let [responseUser, user] = await fetchRequest('/api/user/', "GET", true);
-   if (responseUser.ok) {
+async function createProfileMenu(response, user) {
+   if (response.ok) {
       $('#userMenu').html(`
          <li><a href="/profile/" class="dropdown-item" style="color: #A8E063FF"><i class="fa-solid fa-at me-1"></i>${user['username']}</a></li>
          <li><a class="dropdown-item">Another action</a></li>
@@ -108,4 +107,13 @@ $(document).ready(async function() {
          <li><a class="dropdown-item" href="/login?next=${makeNextURLParam(location)}">Войти</a></li>
       `);
    }
+}
+
+async function initializeUser() {
+   let [response, user] = await fetchRequest('/api/user/', true);
+   createProfileMenu(response, user);
+}
+
+$(document).ready(function() {
+   initializeUser();
 });

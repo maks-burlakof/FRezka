@@ -32,9 +32,6 @@ class UserOut(BaseModel):
     date_joined: datetime
     is_active: bool
 
-    class Config:
-        orm_mode = True
-
 
 class TokenOut(BaseModel):
     access_token: str
@@ -45,8 +42,33 @@ class TokenData(BaseModel):
     id: int
 
 
-class Movie(BaseModel):
+class MovieBase(BaseModel):
+    id: int
     title: str
     cover_url: str
-    kinopoisk_url: str
     rezka_url: str
+
+
+class MovieCreate(MovieBase):
+    pass
+
+
+class MovieOut(MovieBase):
+    date_created: datetime
+
+
+class TimecodeBase(BaseModel):
+    movie_id: int
+    timecode: int
+    duration: int
+    translator: int
+    season: Optional[int] = None
+    episode: Optional[int] = None
+
+
+class TimecodeCreate(TimecodeBase):
+    pass
+
+
+class TimecodeOut(TimecodeBase):
+    pass

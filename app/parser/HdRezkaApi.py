@@ -21,6 +21,7 @@ class HdRezkaApi():
 	def __init__(self, url):
 		self.HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
 		self.url = url.split(".html")[0] + ".html"
+		self.domain = 'https://kinopub.me'
 
 	@cached_property
 	def page(self):
@@ -32,7 +33,11 @@ class HdRezkaApi():
 
 	@cached_property
 	def id(self):
-		return self.soup.find(id="post_id").attrs['value']
+		hidden_id = self.soup.find(id="post_id")
+		if hidden_id:
+			return hidden_id.attrs['value']
+		else:
+			return self.url.split('/')[-1].split('-')[0]
 
 	@cached_property
 	def name(self):
@@ -57,6 +62,13 @@ class HdRezkaApi():
 		rating = wraper.find(class_='num').get_text()
 		votes = wraper.find(class_='votes').get_text().strip("()")
 		return HdRezkaRating(value=float(rating), votes=int(votes))
+
+	@cached_property
+	def year(self):
+		year_element = self.soup.find('h2', text='Дата выхода')
+		if year_element:
+			return year_element.parent.parent.findAll('td')[-1].find('a').text.strip(' года')
+		return None
 
 	@cached_property
 	def translators(self):
@@ -148,7 +160,7 @@ class HdRezkaApi():
 				"translator_id": self.translators[i],
 				"action": "get_episodes"
 			}
-			r = requests.post("https://kinopub.me/ajax/get_cdn_series/", data=js, headers=self.HEADERS)
+			r = requests.post(f"{self.domain}/ajax/get_cdn_series/", data=js, headers=self.HEADERS)
 			response = r.json()
 			if response['success']:
 				seasons, episodes = self.getEpisodes(response['seasons'], response['episodes'])
@@ -160,7 +172,7 @@ class HdRezkaApi():
 
 	def getStream(self, season=None, episode=None, translation=None, index=0):
 		def makeRequest(data):
-			r = requests.post("https://kinopub.me/ajax/get_cdn_series/", data=data, headers=self.HEADERS)
+			r = requests.post(f"{self.domain}/ajax/get_cdn_series/", data=data, headers=self.HEADERS)
 			r = r.json()
 			if r['success']:
 				arr = self.clearTrash(r['url']).split(",")

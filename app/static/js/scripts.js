@@ -24,19 +24,24 @@ function showMessage(type, HTMLText) {
    let messagesContainer = $('#messagesContainer');
    messagesContainer.append(newMsgElem);
    bootstrap.Toast.getOrCreateInstance(newMsgElem).show();
-   setTimeout(function () {
-      newMsgElem.remove();
-   }, 10000);
+   // setTimeout(function () {
+   //    newMsgElem.remove();
+   // }, 10000);
 }
 
-async function fetchRequest(url, method = "GET", ignoreAuth = false) {
-   let response = await fetch(url, {
+async function fetchRequest(url, ignoreAuth = false, method = 'GET', body = '') {
+   let params = {
       method: method,
       headers: {
-         "Content-Type": "application/json",
-         "Authorization": `Bearer ${Cookies.get('access_token')}`,
+         'Content-Type': 'application/json',
+         'Authorization': `Bearer ${Cookies.get('access_token')}`,
       },
-   });
+   };
+   if (method === 'POST') {
+      params['body'] = body;
+   }
+
+   let response = await fetch(url, params);
    let data = await response.json();
 
    if (!response.ok) {

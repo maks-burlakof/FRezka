@@ -1,18 +1,34 @@
+var movieId = 0;
 var rezkaShortUrl = '';
 var seriesInfo = [];
 var streamsQualities = {};
+
 var isStreamUpdated = false;
 var isStreamUpdating = false;
 
 function needToUpdateStream() {
    isStreamUpdated = false;
-   let qualitySelect = $('#movieSelectsQualityDiv');
-   if (qualitySelect) {
-      qualitySelect.remove();
-   }
+   $('#movieSelectsQualityDiv').remove();
    $('#streamUpdateIconPlace').html(`
       <span id="streamUpdateIcon" style="color: #dd910e;" class="small ms-2 mb-2"><i class="fa-solid fa-circle"></i></span>
    `);
+}
+
+async function updateUserTimecode() {
+   let player = document.querySelector('#moviePlayer');
+
+   let translatorId = $('#movieSelectsTranslators').val();
+   let seasonId = $('#movieSelectsSeasons').val();
+   let episodeId = $('#movieSelectsEpisodes').val();
+
+   let [response, data] = await fetchRequest('/api/media/timecode/', true, 'POST', JSON.stringify({
+      'movie_id': movieId,
+      'timecode': Math.round(player.currentTime),
+      'duration': Math.round(player.duration),
+      'translator': translatorId,
+      'season': seasonId ? seasonId : null,
+      'episode': episodeId ? episodeId : null,
+   }));
 }
 
 function changeQuality() {
@@ -96,11 +112,10 @@ function updateEpisodesSelect() {
          document.querySelector('#movieSelectsEpisodes').innerHTML = episodesOptionsHTML;
       }
    }
-   needToUpdateStream();
 }
 
 function updateSeasonsSelect() {
-   let translatorId = document.querySelector('#movieSelectsTranslators').value;
+   let translatorId = $('#movieSelectsTranslators').val();
    for (let data of Object.values(seriesInfo)) {
       if (data['translator_id'] === parseInt(translatorId)) {
          let seasonCodes = Object.keys(data['seasons']);
@@ -110,7 +125,7 @@ function updateSeasonsSelect() {
          for (let i = 0; i < seasonCodes.length; i++) {
             seasonsOptionsHTML += `<option ${i ? '':'selected'} value="${seasonCodes[i]}">${seasonNames[i]}</option>`;
          }
-         document.querySelector('#movieSelectsSeasons').innerHTML = seasonsOptionsHTML;
+         $('#movieSelectsSeasons').html(seasonsOptionsHTML);
          updateEpisodesSelect();
       }
    }
@@ -118,7 +133,7 @@ function updateSeasonsSelect() {
 
 async function fillInfo() {
    rezkaShortUrl = getURLParam(location.href, 'u');
-   document.querySelector('#movieHdRezkaBtn').href = 'https://kinopub.me/' + rezkaShortUrl;
+   $('#movieHdRezkaBtn').attr('href', 'https://kinopub.me/' + rezkaShortUrl);
 
    let [response, data] = await fetchRequest(`/api/media/info?u=${rezkaShortUrl}`);
 
@@ -126,7 +141,7 @@ async function fillInfo() {
       let errorMsg = data['detail'];
       // showMessage('danger', `${response.status} ${errorMsg}`);
 
-      document.querySelector('#movieInfoPlaceholder').innerHTML = `
+      $('#movieInfoPlaceholder').html(`
          <div class="alert alert-dark col-12 col-lg-10 col-xl-8" role="alert">
             <a style="color: #4d4d4d" data-bs-toggle="collapse" href="#movieAlertCollapse" role="button" aria-expanded="false" aria-controls="movieAlertCollapse">
                <span class="d-flex justify-content-between align-items-center">
@@ -140,19 +155,20 @@ async function fillInfo() {
                </div>
             </div>
          </div>
-      `;
+      `);
       return;
    }
 
-   document.querySelector('#movieCoverPlaceholder').remove();
+   $('#movieCoverPlaceholder').remove();
 
+   movieId = data['id'];
    seriesInfo = data['series_info'];
 
    // Fill movie info
-   document.querySelector('#movieCover').src = data['cover_url'];
-   document.querySelector('#movieTitle').innerHTML = data['title'];
-   document.querySelector('#movieYear').innerHTML = '2023';
-   document.querySelector('#movieRating').innerHTML = data['rating_value'];
+   $('#movieCover').attr('src', data['cover_url']);
+   $('#movieTitle').html(data['title']);
+   $('#movieYear').html(data['year']);
+   $('#movieRating').html(data['rating_value']);
 
    // Fill translators
    let translatorsSelectHTML = `
@@ -164,15 +180,13 @@ async function fillInfo() {
    for (let i = 0; i < translatorsNames.length; i++) {
       translatorsSelectHTML += `<option ${i ? '':'selected'} value="${translatorsCodes[i]}">${translatorsNames[i]}</option>`;
    }
-   translatorsSelectHTML += `
+   $('#movieSelects').html(translatorsSelectHTML + `
          </select>
          <label for="movieSelectsTranslators">Озвучка</label>
       </div>
-   `;
-   let movieSelectsElem = document.querySelector('#movieSelects');
-   movieSelectsElem.innerHTML = translatorsSelectHTML;
+   `);
    if (translatorsNames.length < 2) {
-      document.querySelector('#movieSelectsTranslatorsDiv').classList.add('d-none');
+      $('#movieSelectsTranslatorsDiv').addClass('d-none');
    }
 
    // Create seasons, episodes selects
@@ -189,8 +203,22 @@ async function fillInfo() {
             <label for="movieSelectsEpisodes">Серия</label>
          </div>
       `;
-      movieSelectsElem.innerHTML += seasonSelectHTML + episodeSelectHTML;
+      $('#movieSelects').append(seasonSelectHTML + episodeSelectHTML);
       updateSeasonsSelect();
+   }
+   needToUpdateStream();
+
+   // Get user timecode and set them
+   [responseTimecode, dataTimecode] = await fetchRequest(`/api/media/timecode/${movieId}`);
+   if (responseTimecode.ok) {
+      $('#movieSelectsTranslators').val(dataTimecode['translator']);
+      if (dataTimecode['season']) {
+         $('#movieSelectsSeasons').val(dataTimecode['season']);
+      }
+      if (dataTimecode['episode']) {
+         $('#movieSelectsEpisodes').val(dataTimecode['episode']);
+      }
+      document.querySelector('#moviePlayer').currentTime = dataTimecode['timecode'];
    }
 
    // Fill other parts
@@ -216,17 +244,24 @@ window.addEventListener("load", async function () {
 
    $('#movieSelectsTranslators').change(function () {
       updateSeasonsSelect();
+      needToUpdateStream();
    });
    $('#movieSelectsSeasons').change(function () {
       updateEpisodesSelect();
+      needToUpdateStream();
    });
    $('#movieSelectsEpisodes').change(function () {
       needToUpdateStream();
    });
 
-   $('#moviePlayer').click(function () {
-      if (!isStreamUpdated && !isStreamUpdating) {
-         getStream();
-      }
+   $('#moviePlayer').on({
+      click: function () {
+         if (!isStreamUpdated && !isStreamUpdating) {
+            getStream();
+         }
+      },
+      pause: function () {
+         updateUserTimecode();
+      },
    });
 });
