@@ -1,3 +1,20 @@
+function getHTMLMovieCard(url, cover, title, year, country, genre) {
+   return `
+      <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+         <div class="card movie-card">
+            <a href="/film?u=${url}">
+               <img src="${cover}" class="card-img-top">
+               <div class="movie-card-caption">
+                  <h6>${title}</h6>
+                  <p>${year}, ${country}, ${genre}</p>
+               </div>
+            </a>
+         </div>
+      </div>
+   `;
+}
+
+
 function removeDomain(url) {
    return url.replace(/^.*\/\/[^\/]+/, '').slice(1);
 }

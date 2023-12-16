@@ -3,25 +3,15 @@ async function getSearchResults() {
    let [response, data] = await fetchRequest(`/api/media/search?q=${searchedStr}`);
 
    if (!response.ok) {
-      showMessage('danger', `${response.status} ${data['detail']}`);
+      if (response.status !== 401) {
+         showMessage('danger', `${response.status} ${data['detail']}`);
+      }
       return;
    }
 
    let resultsHTML = '';
    for (let movie of data) {
-      resultsHTML += `
-         <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
-            <div class="card movie-card">
-               <a href="/film?u=${removeDomain(movie['url'])}">
-                  <img src="${movie['cover_url']}" class="card-img-top">
-                  <div class="movie-card-caption">
-                     <h6>${movie['title']}</h6>
-                     <p>${movie['year']}, ${movie['country']}, ${movie['genre']}</p>
-                  </div>
-               </a>
-            </div>
-         </div>
-      `;
+      resultsHTML += getHTMLMovieCard(removeDomain(movie['url']), movie['cover_url'], movie['title'], movie['year'], movie['country'], movie['genre']);
    }
 
    if (data.length === 0) {

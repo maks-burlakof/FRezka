@@ -24,11 +24,10 @@ class Parser:
             'series_info': rezka.seriesInfo,
         }
 
-    def search(self, q: str):
-        url = self.DOMAIN + 'search/?do=search&subaction=search&q=' + q
+    def _get_content_inline_items(self, url: str, content_params: dict):
         page = requests.get(url, headers=self.HEADERS)
         soup = BeautifulSoup(page.text, "html.parser")
-        content = soup.find('div', class_='b-content__inline_items')
+        content = soup.find('div', **content_params)
         if not content:
             return []
         results = content.findAll('div', 'b-content__inline_item')
@@ -53,6 +52,10 @@ class Parser:
             })
         return response
 
+    def search(self, q: str):
+        url = self.DOMAIN + 'search/?do=search&subaction=search&q=' + q
+        return self._get_content_inline_items(url, {'class_': 'b-content__inline_items'})
+
     def film_info(self, url: str):
         rezka = HdRezkaApi(self.DOMAIN + url)
         return self._get_dict_info(rezka, url)
@@ -64,3 +67,6 @@ class Parser:
             raise ValueError('The season and episode for series must be integers')
 
         return rezka.getStream(season, episode, translation).videos, self._get_dict_info(rezka, url)
+
+    def latest_movies(self):
+        return self._get_content_inline_items(self.DOMAIN, {'class_': 'b-newest_slider__inner'})

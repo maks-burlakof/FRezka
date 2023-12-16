@@ -42,6 +42,12 @@ def get_stream(u: str, t: int, s: int = None, e: int = None, user=Depends(get_cu
     return streams
 
 
+@router.get('/latest')
+def get_latest_films():
+    data = parser.latest_movies()
+    return data
+
+
 @router.get('/timecode/{movie_id}', response_model=schemes.TimecodeOut)
 def get_timecode(movie_id: int, user=Depends(get_current_user), db: Session = Depends(get_db)):
     timecode = db.query(models.Timecode).filter(models.Timecode.movie_id == movie_id and models.Timecode.user_id == user.id).first()
