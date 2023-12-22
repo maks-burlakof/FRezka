@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import PlainTextResponse
 
 router = APIRouter(prefix='', tags=['Pages'])
 templates = Jinja2Templates(directory='app/templates/')
@@ -44,3 +45,9 @@ def profile(request: Request):
         'request': request,
     }
     return templates.TemplateResponse('profile.html', context)
+
+
+@router.get('/robots.txt', response_class=PlainTextResponse)
+def robots():
+    data = """User-agent: *\nDisallow: /"""
+    return data
