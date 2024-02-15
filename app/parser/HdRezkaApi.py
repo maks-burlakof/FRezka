@@ -12,20 +12,26 @@ except ImportError:
 	from .utils.types import (HdRezkaTVSeries, HdRezkaMovie, HdRezkaRating)
 	from .utils.stream import HdRezkaStream
 
+from app.config import settings
+
 class BeautifulSoupCustom(BeautifulSoup):
 	def __repr__(self):
 		return "<HTMLDocument>"
 
 class HdRezkaApi():
-	__version__ = 6.1
-	def __init__(self, url):
-		self.HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
+	__version__ = "7.0.0"
+	def __init__(self, url, proxy={}, headers={}):
 		self.url = url.split(".html")[0] + ".html"
-		self.domain = 'https://kinopub.me'
+		self.proxy = proxy
+		self.HEADERS = {
+			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36',
+			**headers
+		}
+		self.domain = settings.rezka_url
 
 	@cached_property
 	def page(self):
-		return requests.get(self.url, headers=self.HEADERS)
+		return requests.get(self.url, headers=self.HEADERS, proxies=self.proxy)
 
 	@cached_property
 	def soup(self):
@@ -160,7 +166,7 @@ class HdRezkaApi():
 				"translator_id": self.translators[i],
 				"action": "get_episodes"
 			}
-			r = requests.post(f"{self.domain}/ajax/get_cdn_series/", data=js, headers=self.HEADERS)
+			r = requests.post(f"{self.domain}/ajax/get_cdn_series/", data=js, headers=self.HEADERS, proxies=self.proxy)
 			response = r.json()
 			if response['success']:
 				seasons, episodes = self.getEpisodes(response['seasons'], response['episodes'])
@@ -172,7 +178,7 @@ class HdRezkaApi():
 
 	def getStream(self, season=None, episode=None, translation=None, index=0):
 		def makeRequest(data):
-			r = requests.post(f"{self.domain}/ajax/get_cdn_series/", data=data, headers=self.HEADERS)
+			r = requests.post(f"{self.domain}/ajax/get_cdn_series/", data=data, headers=self.HEADERS, proxies=self.proxy)
 			r = r.json()
 			if r['success']:
 				arr = self.clearTrash(r['url']).split(",")
@@ -181,9 +187,11 @@ class HdRezkaApi():
 										subtitles={'data':  r['subtitle'], 'codes': r['subtitle_lns']}
 									  )
 				for i in arr:
-					res = i.split("[")[1].split("]")[0]
-					video = i.split("[")[1].split("]")[1].split(" or ")[1]
-					stream.append(res, video)
+					temp = i.split("[")[1].split("]")
+					quality = str(temp[0])
+					links = filter(lambda x: x.endswith(".mp4"), temp[1].split(" or "))
+					for video in links:
+						stream.append(quality, video)
 				return stream
 
 		def getStreamSeries(self, season, episode, translation_id):

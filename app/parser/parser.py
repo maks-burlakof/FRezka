@@ -1,12 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 
+from app.config import settings
 from app.parser.HdRezkaApi import HdRezkaApi
 
 
 class Parser:
     def __init__(self):
-        self.DOMAIN = 'https://kinopub.me/'
+        self.DOMAIN = settings.rezka_url
         self.HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
 
     def _get_dict_info(self, rezka: HdRezkaApi, url: str):
