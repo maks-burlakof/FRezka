@@ -29,11 +29,16 @@
                   </span>
                </span>
             </h5>
-            <div id="movieButtons">
+            <div id="movieTimecodeInfo" class="mb-4 mb-lg-5 d-none"></div>
+            <div id="movieButtons" class="d-flex align-items-center text-nowrap">
+               <button id="movieIsWatchedBtn" class="fs-6 btn film-not-watched me-1" disabled>
+                  <span class="swap-icons">
+                     <i class="fa-solid fa-eye initial-icon" style="width: 1.5rem"></i>
+                     <i class="fa-solid fa-eye-slash hover-icon" style="width: 1.5rem"></i>
+                  </span>
+               </button>
+               <i class="fa-solid fa-circle mx-3" style="color: #949494;"></i>
                <a id="movieHdRezkaBtn" target="_blank" class="btn bg-violet-g"><i class="fa-solid fa-film me-1"></i> HDRezka</a>
-            </div>
-            <div class="mt-4 d-none">
-               <h5 id="movieIsAdded" style="color: #3ed310"><i class="fa-solid fa-circle-check"></i></h5>
             </div>
          </div>
       </div>
@@ -58,11 +63,11 @@
          </div>
       </div>
       <div id="movieOtherParts" class="d-none">
-         <h2 class="mb-2"><i class="fa-solid fa-film me-2"></i> Другие части</h2>
+         <h2 class="mb-3"><i class="fa-solid fa-film me-2"></i> Другие части</h2>
          <div id="movieOtherPartsContent" class="d-flex flex-column"></div>
       </div>
    </div>
 {% endblock %}
 {% block extrajs %}
-   <script src="{{ url_for('static', path='js/movie.js') }}?v=1.0"></script>
+   <script src="{{ url_for('static', path='js/movie.js') }}?v=1.1"></script>
 {% endblock %}

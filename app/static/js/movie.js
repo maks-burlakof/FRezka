@@ -1,4 +1,5 @@
 var movieId = 0;
+var movieIsWatched = false;
 var rezkaShortUrl = '';
 var seriesInfo = [];
 var streamsQualities = {};
@@ -20,15 +21,24 @@ async function updateUserTimecode() {
    let translatorId = $('#movieSelectsTranslators').val();
    let seasonId = $('#movieSelectsSeasons').val();
    let episodeId = $('#movieSelectsEpisodes').val();
+   let timecode = Math.round(player.currentTime);
+   let duration = Math.round(player.duration);
 
    let [response, data] = await fetchRequest('/api/media/timecode/', true, 'POST', JSON.stringify({
       'movie_id': movieId,
-      'timecode': Math.round(player.currentTime),
-      'duration': Math.round(player.duration),
-      'translator': translatorId,
+      'timecode': timecode,
+      'duration': duration,
+      'translator': translatorId ? translatorId : null,
       'season': seasonId ? seasonId : null,
       'episode': episodeId ? episodeId : null,
+      'is_watched': (timecode / duration > 0.95),
    }));
+
+   movieIsWatched = data['is_watched'];
+   if (data['is_watched'] && !$('#movieIsWatchedBtn').hasClass('film-watched')) {
+      $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
+      showMessage('success', '<i class="fa-solid fa-check me-1"></i> Фильм просмотрен');
+   }
 }
 
 function changeQuality() {
@@ -135,6 +145,42 @@ async function fillInfo() {
    rezkaShortUrl = getURLParam(location.href, 'u');
    $('#movieHdRezkaBtn').attr('href', 'https://kinopub.me/' + rezkaShortUrl);
 
+   // Get user timecode
+   let [responseTimecode, dataTimecode] = await fetchRequest(`/api/media/timecode?u=${rezkaShortUrl}`);
+   if (responseTimecode.ok) {
+      $('#movieCoverPlaceholder').remove();
+      $('#movieCover').attr('src', dataTimecode['cover_url']);
+      $('#movieTitle').html(dataTimecode['title']);
+      movieId = dataTimecode['movie_id'];
+
+      movieIsWatched = dataTimecode['is_watched'];
+      $('#movieIsWatchedBtn').removeAttr('disabled');
+      if (dataTimecode['is_watched']) {
+         $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
+      }
+
+      let d = Number(dataTimecode['timecode']);
+      let h = Math.floor(d / 3600);
+      let m = Math.floor(d % 3600 / 60);
+      let s = Math.floor(d % 3600 % 60);
+
+      $('#movieTimecodeInfo').html(`
+         <div class="rounded-4 p-4 bg-dark-g col-xl-6 col-lg-8" style="border-top-left-radius: 0!important;">
+            <p class="mb-2">
+               Ты остановился на ${h > 0 ? h + ':' : ''}${m > 0 ? (m < 10 ? '0' : '') + m + ':' : '00:'}${s > 0 ? (s < 10 ? '0' : '') + s : '00'}<br>
+               ${dataTimecode['season'] ? dataTimecode['season'] + ' сезон, ' : ''}
+               ${dataTimecode['episode'] ? dataTimecode['episode'] + ' серия.' : ''}
+            </p>
+            <div class="progress-stacked" style="height: 4px;">
+               <div class="progress" role="progressbar" style="width: ${100*dataTimecode['timecode']/dataTimecode['duration']}%">
+                  <div class="progress-bar"></div>
+               </div>
+            </div>
+         </div>
+      `);
+      $('#movieTimecodeInfo').removeClass('d-none');
+   }
+
    let [response, data] = await fetchRequest(`/api/media/info?u=${rezkaShortUrl}`);
 
    if (!response.ok) {
@@ -159,10 +205,11 @@ async function fillInfo() {
       return;
    }
 
-   $('#movieCoverPlaceholder').remove();
-
    movieId = data['id'];
    seriesInfo = data['series_info'];
+
+   $('#movieCoverPlaceholder').remove();
+   $('#movieIsWatchedBtn').removeAttr('disabled');
 
    // Fill movie info
    $('#movieCover').attr('src', data['cover_url']);
@@ -208,8 +255,7 @@ async function fillInfo() {
    }
    needToUpdateStream();
 
-   // Get user timecode and set them
-   [responseTimecode, dataTimecode] = await fetchRequest(`/api/media/timecode/${movieId}`);
+   // Set user timecode
    if (responseTimecode.ok) {
       $('#movieSelectsTranslators').val(dataTimecode['translator']);
       if (dataTimecode['season']) {
@@ -232,14 +278,37 @@ async function fillInfo() {
    }
 
    // Create Kinopoisk button
-   let kinopoiskBtn = document.createElement('span');
+   /*let kinopoiskBtn = document.createElement('span');
    kinopoiskBtn.innerHTML = `
-      <a id="movieKinopoiskBtn" target="_blank" class="btn bg-orange-g me-1"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
+      <a id="movieKinopoiskBtn" target="_blank" class="btn bg-orange-g ms-2"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
    `;
-   document.querySelector('#movieButtons').prepend(kinopoiskBtn);
+   document.querySelector('#movieButtons').append(kinopoiskBtn);*/
 }
 
 window.addEventListener("load", async function () {
+   $("#movieIsWatchedBtn").click(async function(){
+      console.log(JSON.stringify({
+         'movie_id': movieId,
+         'is_watched': !movieIsWatched,
+      }));
+
+      let [response, data] = await fetchRequest('/api/media/timecode/', true, 'PATCH', JSON.stringify({
+         'movie_id': movieId,
+         'is_watched': !movieIsWatched,
+      }));
+
+      if (response.ok) {
+         showMessage('success', '<i class="fa-solid fa-check me-1"></i> Сохранено');
+
+         movieIsWatched = data['is_watched'];
+         if (data['is_watched'] && $('#movieIsWatchedBtn').hasClass('film-not-watched')) {
+            $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
+         } else if (!data['is_watched'] && $('#movieIsWatchedBtn').hasClass('film-watched')) {
+            $('#movieIsWatchedBtn').removeClass('film-watched').addClass('film-not-watched');
+         }
+      }
+   });
+
    await fillInfo();
 
    $('#movieSelectsTranslators').change(function () {

@@ -1,3 +1,5 @@
+from typing import Optional, List
+
 from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.orm import Session
 
@@ -11,7 +13,7 @@ parser = Parser()
 
 
 @router.get('/search')
-def get_search_results(q: str, user=Depends(get_current_user)):
+def get_search_results(q: str):
     data = parser.search(q)
     return data
 
@@ -48,16 +50,37 @@ def get_latest_films():
     return data
 
 
-@router.get('/timecode/{movie_id}', response_model=schemes.TimecodeOut)
-def get_timecode(movie_id: int, user=Depends(get_current_user), db: Session = Depends(get_db)):
-    timecode = db.query(models.Timecode).filter(models.Timecode.movie_id == movie_id and models.Timecode.user_id == user.id).first()
+@router.get('/timecodes', response_model=List[schemes.TimecodeMovieOut])
+def get_movies_timecodes(user=Depends(get_current_user), db: Session = Depends(get_db)):
+    recent_watched = db.query(models.Timecode, models.Movie).join(
+        models.Movie, models.Timecode.movie_id == models.Movie.id
+    ).filter(
+        models.Timecode.user_id == user.id, models.Timecode.is_watched == False
+    ).order_by(models.Timecode.last_watched.desc()).limit(6).all()
+
+    return [{**timecode.__dict__, **movie.__dict__} for timecode, movie in recent_watched]
+
+
+@router.get('/timecode', response_model=schemes.TimecodeMovieOut)
+def get_movie_timecode(id: Optional[int] = None, u: Optional[str] = None, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    if not id and not u:
+        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='You must provide either movie_id or rezka_url')
+
+    movie = db.query(models.Movie).filter(
+        (models.Movie.rezka_url == u) if u else (models.Movie.id == id)
+    ).first()
+    if not movie:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Movie not found')
+
+    timecode = db.query(models.Timecode).filter(models.Timecode.movie_id == movie.id and models.Timecode.user_id == user.id).first()
     if not timecode:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Timecode for the movie not found')
-    return timecode
+
+    return {**timecode.__dict__, **movie.__dict__}
 
 
 @router.post('/timecode', response_model=schemes.TimecodeOut)
-def create_timecode(updated_timecode: schemes.TimecodeCreate, user=Depends(get_current_user), db: Session = Depends(get_db)):
+def create_update_timecode(updated_timecode: schemes.TimecodeCreate, user=Depends(get_current_user), db: Session = Depends(get_db)):
     timecode_query = db.query(models.Timecode).filter(models.Timecode.movie_id == updated_timecode.movie_id and models.Timecode.user_id == user.id)
     timecode = timecode_query.first()
 
@@ -69,5 +92,18 @@ def create_timecode(updated_timecode: schemes.TimecodeCreate, user=Depends(get_c
         return new_timecode
     else:
         timecode_query.update(updated_timecode.model_dump(), synchronize_session=False)
+        db.commit()
+        return timecode_query.first()
+
+
+@router.patch('/timecode', response_model=schemes.TimecodeOut)
+def update_timecode(updated_timecode: schemes.TimecodeUpdate, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    timecode_query = db.query(models.Timecode).filter(models.Timecode.movie_id == updated_timecode.movie_id and models.Timecode.user_id == user.id)
+    timecode = timecode_query.first()
+
+    if not timecode:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Timecode for the movie not found')
+    else:
+        timecode_query.update(updated_timecode.model_dump(exclude_unset=True, exclude_none=True), synchronize_session=False)
         db.commit()
         return timecode_query.first()

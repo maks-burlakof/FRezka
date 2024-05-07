@@ -1,4 +1,4 @@
-function getHTMLMovieCard(url, cover, title, year, country, genre) {
+function getHTMLMovieCard(url, cover, title, year, country, genre, timecode = null, duration = null) {
    return `
       <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
          <div class="card movie-card">
@@ -6,8 +6,15 @@ function getHTMLMovieCard(url, cover, title, year, country, genre) {
                <img src="${cover}" class="card-img-top">
                <div class="movie-card-caption">
                   <h6>${title}</h6>
-                  <p>${year}, ${country}, ${genre}</p>
+                  <p>${year? year : ''}${country ? ', ' + country : ''}${genre ? ', ' + genre : ''}</p>
                </div>
+               ${(timecode && duration) ? (`
+               <div class="movie-card-progress progress-stacked" style="height: 4px;">
+                  <div class="progress" role="progressbar" style="width: ${100*timecode/duration}%">
+                     <div class="progress-bar"></div>
+                  </div>
+               </div>
+               `) : '' }
             </a>
          </div>
       </div>
@@ -54,7 +61,7 @@ async function fetchRequest(url, ignoreAuth = false, method = 'GET', body = '') 
          'Authorization': `Bearer ${Cookies.get('access_token')}`,
       },
    };
-   if (method === 'POST') {
+   if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
       params['body'] = body;
    }
 

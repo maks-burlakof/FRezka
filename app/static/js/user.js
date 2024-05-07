@@ -22,6 +22,10 @@ function initializeAuthForm() {
       $('#headerTitle').text(tabName);
    })
 
+   $('#loginPassword').on('input', function() {
+      $('#loginErrorContainer').addClass('d-none');
+   });
+
    $('#loginForm').submit(async function (e) {
       e.preventDefault();
       let response = await fetch('/api/auth/login/', {
@@ -47,7 +51,6 @@ function initializeAuthForm() {
 
       Cookies.set('access_token', data['access_token'], { expires: 365 });
       let nextURL = getURLParam(location.href ,'next');
-      console.log(nextURL); // TODO: debug only
       $(location).attr('href', nextURL ? nextURL : '/profile/');
    })
 
@@ -99,7 +102,7 @@ async function createProfileMenu(response, user) {
    if (response.ok) {
       $('#userMenu').html(`
          <li><a href="/profile/" class="dropdown-item" style="color: #A8E063FF"><i class="fa-solid fa-at me-1"></i>${user['username']}</a></li>
-         <li><a class="dropdown-item">Another action</a></li>
+         <li><a href="/profile/watched/" class="dropdown-item">Фильмы</a></li>
          <li><button class="dropdown-item" type="button" onclick="logout()" style="opacity: 70%">Выйти</button></li>
       `);
    } else {

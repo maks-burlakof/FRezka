@@ -10,12 +10,16 @@ body {
     background-color: black;
     font-family: 'Montserrat';
 }
-h1, h2, h3, h4, h5, h6, p, a {
+h1, h2, h3, h4, h5, h6, p, a, label {
     color: #fff;
     margin-bottom: 0;
 }
 a {
     text-decoration: none;
+}
+.hoverable:hover {
+    transition: all .1s ease-in-out;
+    color: #d9d9d9;
 }
 .text-brand {
     font-family: 'Montserrat-Alt1';
@@ -68,12 +72,12 @@ section {
     color: #fff;
     border: 0;
 }
-.bg-red-g {
+.bg-red-g, .film-not-watched {
     background: linear-gradient(to right, #fa3a3a, #c2010a);
     color: #fff;
     border: 0;
 }
-.bg-green-g {
+.bg-green-g, .film-watched {
     background: linear-gradient(to right, #a8e063, #56ab2f);
     color: #fff;
     border: 0;
@@ -94,6 +98,14 @@ section {
     width: 100%;
     bottom: 0;
     background: linear-gradient(0deg, #232323, 85%, rgba(0, 0, 0, 0));
+}
+.movie-card-progress {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+.movie-card-progress .progress-bar {
+    background-color: #F3A623;
 }
 .movie-card h6 {
     color: #ffffff;
@@ -368,9 +380,21 @@ section {
     color: #fff;
 }
 
+.profile-pic {
+    -webkit-filter: drop-shadow(10px 10px 0 #fff)
+                    drop-shadow(-4px -4px 0 #fff);
+    filter: drop-shadow(10px 10px 0 #fff)
+            drop-shadow(-4px -4px 0 #fff);
+}
 
-
-
+/* Swap icons on hover/focus */
+.swap-icons:hover .initial-icon,
+.swap-icons .hover-icon {
+    display: none;
+}
+.swap-icons:hover .hover-icon {
+    display: inline-block;
+}
 
 
 
