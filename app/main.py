@@ -8,7 +8,7 @@ from .routers import pages, media, auth, users
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(openapi_url=None)
 
 app.mount('/static', StaticFiles(directory='app/static/'), name='static')
 

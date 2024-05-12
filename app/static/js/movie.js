@@ -7,12 +7,59 @@ var streamsQualities = {};
 var isStreamUpdated = false;
 var isStreamUpdating = false;
 
+function showMovieInfoError(status, errorMsg) {
+   $('#movieInfoPlaceholder').html(`
+      <div class="alert alert-dark col-12 col-lg-10 col-xl-8" role="alert">
+         <a style="color: #4d4d4d" data-bs-toggle="collapse" href="#movieAlertCollapse" role="button" aria-expanded="false" aria-controls="movieAlertCollapse">
+            <span class="d-flex justify-content-between align-items-center">
+               Не удалось загрузить информацию
+               <i class="fa-solid fa-circle-info"></i>
+            </span>
+         </a>
+         <div class="collapse" id="movieAlertCollapse">
+            <div class="card card-body mt-3">
+               <span><span class="text-danger">${status}</span> ${errorMsg}</span>
+            </div>
+         </div>
+      </div>
+   `);
+}
+
 function needToUpdateStream() {
    isStreamUpdated = false;
    $('#movieSelectsQualityDiv').remove();
    $('#streamUpdateIconPlace').html(`
       <span id="streamUpdateIcon" style="color: #dd910e;" class="small ms-2 mb-2"><i class="fa-solid fa-circle"></i></span>
    `);
+
+   let player = document.querySelector('#moviePlayer');
+   player.pause();
+   player.currentTime = 0;
+   $('#moviePlayerVideoSrc').attr('src', '');
+   player.load();
+}
+
+function updateUserTimecodePageInfo(timecode, duration, season, episode) {
+   let d = Number(timecode);
+   let h = Math.floor(d / 3600);
+   let m = Math.floor(d % 3600 / 60);
+   let s = Math.floor(d % 3600 % 60);
+
+   $('#movieTimecodeInfo').html(`
+         <div class="rounded-4 p-4 bg-dark-g col-xl-6 col-lg-8" style="border-top-left-radius: 0!important;">
+            <p class="mb-2">
+               Ты остановился на ${h > 0 ? h + ':' : ''}${m > 0 ? (m < 10 ? '0' : '') + m + ':' : '00:'}${s > 0 ? (s < 10 ? '0' : '') + s : '00'}<br>
+               ${season ? season + ' сезон, ' : ''}
+               ${episode ? episode + ' серия.' : ''}
+            </p>
+            <div class="progress-stacked" style="height: 4px;">
+               <div class="progress" role="progressbar" style="width: ${100*timecode/duration}%">
+                  <div class="progress-bar"></div>
+               </div>
+            </div>
+         </div>
+      `);
+   $('#movieTimecodeInfo').removeClass('d-none');
 }
 
 async function updateUserTimecode() {
@@ -24,7 +71,7 @@ async function updateUserTimecode() {
    let timecode = Math.round(player.currentTime);
    let duration = Math.round(player.duration);
 
-   let [response, data] = await fetchRequest('/api/media/timecode/', true, 'POST', JSON.stringify({
+   let [response, data] = await fetchRequest('/api/media/timecode', true, 'POST', JSON.stringify({
       'movie_id': movieId,
       'timecode': timecode,
       'duration': duration,
@@ -32,12 +79,17 @@ async function updateUserTimecode() {
       'season': seasonId ? seasonId : null,
       'episode': episodeId ? episodeId : null,
       'is_watched': (timecode / duration > 0.95),
+      'last_watched': new Date().toISOString(),
    }));
 
-   movieIsWatched = data['is_watched'];
-   if (data['is_watched'] && !$('#movieIsWatchedBtn').hasClass('film-watched')) {
-      $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
-      showMessage('success', '<i class="fa-solid fa-check me-1"></i> Фильм просмотрен');
+   if (response.ok) {
+      updateUserTimecodePageInfo(timecode, duration, seasonId, episodeId);
+
+      movieIsWatched = data['is_watched'];
+      if (data['is_watched'] && !$('#movieIsWatchedBtn').hasClass('film-watched')) {
+         $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
+         showMessage('success', '<i class="fa-solid fa-check me-1"></i> Фильм просмотрен');
+      }
    }
 }
 
@@ -78,9 +130,11 @@ async function getStream() {
    let [response, data] = await fetchRequest(responseUrl);
 
    if (!response.ok) {
-      showMessage('danger', `${response.status} ${data['detail']}`);
+      showMessage('danger', `<i class="fa-solid fa-circle-exclamation me-1"></i> Ошибка ${response.status} при загрузке плеера`);
+      showMovieInfoError(response.status, data['detail']);
       return;
    }
+   $('#movieInfoPlaceholder').html('');
 
    streamsQualities = data;
    let qualitiesNames = Object.keys(data);
@@ -102,6 +156,16 @@ async function getStream() {
    if (!isStreamUpdated) {
       isStreamUpdated = true;
       document.querySelector('#streamUpdateIcon').remove();
+   }
+
+   if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+         title: $('#movieTitle').text(),
+         artist: "FRezka",
+         artwork: [
+            { src: $('#movieCover').attr('src'), type: "image/png" },
+         ]
+      });
    }
 }
 
@@ -149,81 +213,48 @@ async function fillInfo() {
    let [responseTimecode, dataTimecode] = await fetchRequest(`/api/media/timecode?u=${rezkaShortUrl}`);
    if (responseTimecode.ok) {
       $('#movieCoverPlaceholder').remove();
-      $('#movieCover').attr('src', dataTimecode['cover_url']);
-      $('#movieTitle').html(dataTimecode['title']);
-      movieId = dataTimecode['movie_id'];
+      $('#movieCover').attr('src', dataTimecode.cover_url);
+      $('#movieTitle').html(dataTimecode.title);
+      $(document).prop('title', `${dataTimecode.title} · FRezka`);
+      movieId = dataTimecode.movie_id;
+      updateUserTimecodePageInfo(dataTimecode.timecode, dataTimecode.duration, dataTimecode.season, dataTimecode.episode);
 
-      movieIsWatched = dataTimecode['is_watched'];
+      movieIsWatched = dataTimecode.is_watched;
       $('#movieIsWatchedBtn').removeAttr('disabled');
-      if (dataTimecode['is_watched']) {
+      if (dataTimecode.is_watched) {
          $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
       }
-
-      let d = Number(dataTimecode['timecode']);
-      let h = Math.floor(d / 3600);
-      let m = Math.floor(d % 3600 / 60);
-      let s = Math.floor(d % 3600 % 60);
-
-      $('#movieTimecodeInfo').html(`
-         <div class="rounded-4 p-4 bg-dark-g col-xl-6 col-lg-8" style="border-top-left-radius: 0!important;">
-            <p class="mb-2">
-               Ты остановился на ${h > 0 ? h + ':' : ''}${m > 0 ? (m < 10 ? '0' : '') + m + ':' : '00:'}${s > 0 ? (s < 10 ? '0' : '') + s : '00'}<br>
-               ${dataTimecode['season'] ? dataTimecode['season'] + ' сезон, ' : ''}
-               ${dataTimecode['episode'] ? dataTimecode['episode'] + ' серия.' : ''}
-            </p>
-            <div class="progress-stacked" style="height: 4px;">
-               <div class="progress" role="progressbar" style="width: ${100*dataTimecode['timecode']/dataTimecode['duration']}%">
-                  <div class="progress-bar"></div>
-               </div>
-            </div>
-         </div>
-      `);
-      $('#movieTimecodeInfo').removeClass('d-none');
    }
 
    let [response, data] = await fetchRequest(`/api/media/info?u=${rezkaShortUrl}`);
 
    if (!response.ok) {
       let errorMsg = data['detail'];
-      // showMessage('danger', `${response.status} ${errorMsg}`);
-
-      $('#movieInfoPlaceholder').html(`
-         <div class="alert alert-dark col-12 col-lg-10 col-xl-8" role="alert">
-            <a style="color: #4d4d4d" data-bs-toggle="collapse" href="#movieAlertCollapse" role="button" aria-expanded="false" aria-controls="movieAlertCollapse">
-               <span class="d-flex justify-content-between align-items-center">
-                  Не удалось загрузить информацию
-                  <i class="fa-solid fa-circle-info"></i>
-               </span>
-            </a>
-            <div class="collapse" id="movieAlertCollapse">
-               <div class="card card-body mt-3">
-                  <span><span class="text-danger">${response.status}</span> ${errorMsg}</span>
-               </div>
-            </div>
-         </div>
-      `);
+      showMessage('danger', `<i class="fa-solid fa-circle-exclamation me-1"></i> Ошибка ${response.status} при загрузке информации`);
+      showMovieInfoError(response.status, errorMsg);
       return;
    }
 
-   movieId = data['id'];
-   seriesInfo = data['series_info'];
+   movieId = data.id;
+   seriesInfo = data.series_info;
 
    $('#movieCoverPlaceholder').remove();
    $('#movieIsWatchedBtn').removeAttr('disabled');
 
    // Fill movie info
-   $('#movieCover').attr('src', data['cover_url']);
-   $('#movieTitle').html(data['title']);
-   $('#movieYear').html(data['year']);
-   $('#movieRating').html(data['rating_value']);
+   $('#movieCover').attr('src', data.cover_url);
+   $('#movieTitle').html(data.title);
+   $(document).prop('title', `${data.title} · FRezka`);
+   $('#movieYear').html(data.year);
+   $('#movieRating').html(data.rating_value);
 
    // Fill translators
    let translatorsSelectHTML = `
       <div id="movieSelectsTranslatorsDiv" class="form-floating select-group-transparent me-2 mb-2">
          <select class="form-select" id="movieSelectsTranslators">
    `;
-   let translatorsNames = Object.keys(data['translators']);
-   let translatorsCodes = Object.values(data['translators']);
+   let translatorsNames = Object.keys(data.translators);
+   let translatorsCodes = Object.values(data.translators);
    for (let i = 0; i < translatorsNames.length; i++) {
       translatorsSelectHTML += `<option ${i ? '':'selected'} value="${translatorsCodes[i]}">${translatorsNames[i]}</option>`;
    }
@@ -257,14 +288,14 @@ async function fillInfo() {
 
    // Set user timecode
    if (responseTimecode.ok) {
-      $('#movieSelectsTranslators').val(dataTimecode['translator']);
-      if (dataTimecode['season']) {
-         $('#movieSelectsSeasons').val(dataTimecode['season']);
+      $('#movieSelectsTranslators').val(dataTimecode.translator);
+      if (dataTimecode.season) {
+         $('#movieSelectsSeasons').val(dataTimecode.season);
       }
-      if (dataTimecode['episode']) {
-         $('#movieSelectsEpisodes').val(dataTimecode['episode']);
+      if (dataTimecode.episode) {
+         $('#movieSelectsEpisodes').val(dataTimecode.episode);
       }
-      document.querySelector('#moviePlayer').currentTime = dataTimecode['timecode'];
+      document.querySelector('#moviePlayer').currentTime = dataTimecode.timecode;
    }
 
    // Fill other parts
@@ -292,7 +323,7 @@ window.addEventListener("load", async function () {
          'is_watched': !movieIsWatched,
       }));
 
-      let [response, data] = await fetchRequest('/api/media/timecode/', true, 'PATCH', JSON.stringify({
+      let [response, data] = await fetchRequest('/api/media/timecode', true, 'PATCH', JSON.stringify({
          'movie_id': movieId,
          'is_watched': !movieIsWatched,
       }));
@@ -300,10 +331,10 @@ window.addEventListener("load", async function () {
       if (response.ok) {
          showMessage('success', '<i class="fa-solid fa-check me-1"></i> Сохранено');
 
-         movieIsWatched = data['is_watched'];
-         if (data['is_watched'] && $('#movieIsWatchedBtn').hasClass('film-not-watched')) {
+         movieIsWatched = data.is_watched;
+         if (data.is_watched && $('#movieIsWatchedBtn').hasClass('film-not-watched')) {
             $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
-         } else if (!data['is_watched'] && $('#movieIsWatchedBtn').hasClass('film-watched')) {
+         } else if (!data.is_watched && $('#movieIsWatchedBtn').hasClass('film-watched')) {
             $('#movieIsWatchedBtn').removeClass('film-watched').addClass('film-not-watched');
          }
       }

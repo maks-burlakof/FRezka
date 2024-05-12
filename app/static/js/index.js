@@ -1,5 +1,5 @@
 async function getLatestMovies() {
-   let [response, data] = await fetchRequest('/api/media/latest/');
+   let [response, data] = await fetchRequest('/api/media/latest');
 
    if (!response.ok) {
       showMessage('danger', `${response.status} ${data['detail']}`);

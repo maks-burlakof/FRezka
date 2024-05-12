@@ -1,5 +1,7 @@
 async function getSearchResults() {
    let searchedStr = $('#searchInput').val();
+   $(document).prop('title', `Поиск: ${searchedStr} · FRezka`);
+
    let [response, data] = await fetchRequest(`/api/media/search?q=${searchedStr}`);
 
    if (!response.ok) {

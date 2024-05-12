@@ -98,12 +98,13 @@ class TimecodeBase(BaseModel):
 
 
 class TimecodeCreate(TimecodeBase):
-    pass
+    last_watched: Optional[datetime] = None
 
 
 class TimecodeUpdate(TimecodeBase):
     timecode: Optional[int] = None
     duration: Optional[int] = None
+    last_watched: Optional[datetime] = None
 
 
 class TimecodeOut(TimecodeBase):

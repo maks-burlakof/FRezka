@@ -99,3 +99,20 @@ async function fetchRequest(url, ignoreAuth = false, method = 'GET', body = '') 
    }
    return [response, data];
 }
+
+function ruPlural(value, variants) {
+   variants = variants.split(",");
+   if (!value) {
+      return variants[2];
+   }
+   value = Math.abs(parseInt(value));
+   let variant;
+   if (value % 10 === 1 && value % 100 !== 11) {
+      variant = 0;
+   } else if (2 <= value % 10 && value % 10 <= 4 && (value % 100 < 10 || value % 100 >= 20)) {
+      variant = 1;
+   } else {
+      variant = 2;
+   }
+   return variants[variant];
+}

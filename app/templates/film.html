@@ -19,13 +19,13 @@
             </h1>
             <h2 class="mb-2" id="movieYear">
                <span class="placeholder-glow">
-                  <span class="placeholder col-4"></span>
+                  <span class="placeholder col-2"></span>
                </span>
             </h2>
             <h5 class="mb-4" style="color: #e1be0e"><i class="fa-solid fa-star me-2"></i>
                <span id="movieRating">
                   <span class="placeholder-glow">
-                     <span class="placeholder col-2"></span>
+                     <span class="placeholder col-1"></span>
                   </span>
                </span>
             </h5>
@@ -37,7 +37,7 @@
                      <i class="fa-solid fa-eye-slash hover-icon" style="width: 1.5rem"></i>
                   </span>
                </button>
-               <i class="fa-solid fa-circle mx-3" style="color: #949494;"></i>
+               <i class="fa-solid fa-circle small mx-3" style="color: #949494;"></i>
                <a id="movieHdRezkaBtn" target="_blank" class="btn bg-violet-g"><i class="fa-solid fa-film me-1"></i> HDRezka</a>
             </div>
          </div>
@@ -69,5 +69,5 @@
    </div>
 {% endblock %}
 {% block extrajs %}
-   <script src="{{ url_for('static', path='js/movie.js') }}?v=1.1"></script>
+   <script src="/static/js/movie.js?v=1.2"></script>
 {% endblock %}

@@ -18,14 +18,14 @@
       </section>
    </div>
    <div class="container my-4 my-sm-5">
-      <div id="recentWatchedContainer" class="d-none">
+      <div id="recentWatchedContainer" class="d-none mb-4 mb-lg-0">
          <h1><span style="color: #F3A623;">Продолжить
             <span class="swap-icons">
                <i class="fa-solid fa-pause initial-icon mx-2" style="width: 1.5rem"></i>
                <i class="fa-solid fa-play hover-icon mx-2" style="width: 1.5rem"></i>
             </span>
          </span>просмотр</h1>
-         <div id="recentWatched" class="py-3 py-lg-5 px-lg-5"></div>
+         <div id="recentWatched" class="py-4 py-lg-5 px-lg-5"></div>
       </div>
       <div>
          <h1><span style="color: #F3A623;">Новые</span> фильмы · сериалы · аниме</h1>
@@ -38,5 +38,5 @@
    </div>
 {% endblock %}
 {% block extrajs %}
-	<script src="{{ url_for('static', path='js/index.js') }}?v=1.1"></script>
+	<script src="/static/js/index.js?v=1.2"></script>
 {% endblock %}

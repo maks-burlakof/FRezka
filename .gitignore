@@ -6,4 +6,4 @@
 .env
 logs/
 venv/
-migrations/versions/
+migrations/versions/*.py
