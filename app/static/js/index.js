@@ -17,7 +17,7 @@ async function getLatestMovies() {
 }
 
 async function getRecentWatched() {
-   let [response, data] = await fetchRequest('/api/media/timecodes');
+   let [response, data] = await fetchRequest('/api/media/timecodes', true);
 
    if (!response.ok) {
       showMessage('danger', `${response.status} ${data['detail']}`);

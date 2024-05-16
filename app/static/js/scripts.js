@@ -21,7 +21,6 @@ function getHTMLMovieCard(url, cover, title, year, country, genre, timecode = nu
    `;
 }
 
-
 function removeDomain(url) {
    return url.replace(/^.*\/\/[^\/]+/, '').slice(1);
 }

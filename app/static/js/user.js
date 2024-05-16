@@ -28,7 +28,7 @@ function initializeAuthForm() {
 
    $('#loginForm').submit(async function (e) {
       e.preventDefault();
-      let response = await fetch('/api/auth/login/', {
+      let response = await fetch('/api/auth/login', {
          method: 'POST',
          headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -51,7 +51,7 @@ function initializeAuthForm() {
 
       Cookies.set('access_token', data['access_token'], { expires: 365 });
       let nextURL = getURLParam(location.href ,'next');
-      $(location).attr('href', nextURL ? nextURL : '/profile/');
+      $(location).attr('href', nextURL ? nextURL : '/profile');
    })
 
    $('#registerForm').submit(async function (e) {
@@ -63,7 +63,7 @@ function initializeAuthForm() {
 
       e.preventDefault();
 
-      if ($('#registerAgree').val() !== 'on') {
+      if (!$('#registerAgree').is(':checked')) {
          showError('Примите пользовательское соглашение.');
          return;
       }
@@ -72,7 +72,7 @@ function initializeAuthForm() {
          return;
       }
 
-      let response = await fetch('/api/auth/register/', {
+      let response = await fetch('/api/auth/register', {
          method: 'POST',
          headers: {
             "Content-Type": "application/json",
