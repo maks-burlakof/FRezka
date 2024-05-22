@@ -1,6 +1,6 @@
-from typing import Optional, List
+from typing import Optional, List, Annotated
 
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from sqlalchemy.orm import Session
 
 from .. import models, schemes
@@ -19,7 +19,7 @@ def get_search_results(q: str):
 
 
 @router.get('/info')
-def get_film_info(u: str, user=Depends(get_current_user)):
+def get_film_info(u: Annotated[str, Query(pattern='\w.html$')], user=Depends(get_current_user)):
     try:
         data = parser.film_info(url=u)
     except Exception as e:
@@ -29,7 +29,7 @@ def get_film_info(u: str, user=Depends(get_current_user)):
 
 
 @router.get('/stream')
-def get_stream(u: str, t: int, s: int = None, e: int = None, user=Depends(get_current_user), db: Session = Depends(get_db)):
+def get_stream(u: Annotated[str, Query(pattern='\w.html$')], t: int, s: int = None, e: int = None, user=Depends(get_current_user), db: Session = Depends(get_db)):
     try:
         streams, movie_data = parser.stream(url=u, translation=t, season=s, episode=e)
     except Exception as e:

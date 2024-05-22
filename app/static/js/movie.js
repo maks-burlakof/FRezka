@@ -78,7 +78,7 @@ async function updateUserTimecode() {
       'translator': translatorId ? translatorId : null,
       'season': seasonId ? seasonId : null,
       'episode': episodeId ? episodeId : null,
-      'is_watched': (timecode / duration > 0.95),
+      'is_watched': ((timecode / duration > 0.95) && !episodeId),
       'last_watched': new Date().toISOString(),
    }));
 
@@ -207,6 +207,10 @@ function updateSeasonsSelect() {
 
 async function fillInfo() {
    rezkaShortUrl = getURLParam(location.href, 'u');
+   if (!rezkaShortUrl) {
+      $(location).attr('href', '/');
+      return;
+   }
    $('#movieHdRezkaBtn').attr('href', 'https://kinopub.me/' + rezkaShortUrl);
 
    // Get user timecode

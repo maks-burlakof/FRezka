@@ -2,13 +2,18 @@ async function getSearchResults() {
    let searchedStr = $('#searchInput').val();
    $(document).prop('title', `Поиск: ${searchedStr} · FRezka`);
 
-   let [response, data] = await fetchRequest(`/api/media/search?q=${searchedStr}`);
+   let response, data;
+   if (searchedStr) {
+      [response, data] = await fetchRequest(`/api/media/search?q=${searchedStr}`);
 
-   if (!response.ok) {
-      if (response.status !== 401) {
-         showMessage('danger', `${response.status} ${data['detail']}`);
+      if (!response.ok) {
+         if (response.status !== 401) {
+            showMessage('danger', `${response.status} ${data['detail']}`);
+         }
+         return;
       }
-      return;
+   } else {
+      data = [];
    }
 
    let resultsHTML = '';

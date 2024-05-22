@@ -108,8 +108,14 @@ section {
     background-color: #F3A623;
 }
 .movie-card h6 {
+    --num-lines: 4;
     color: #ffffff;
     margin-bottom: .4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: var(--num-lines); /* Number of lines to show */
+    -webkit-box-orient: vertical;
 }
 .movie-card p {
     color: rgba(255, 255, 255, 0.7);
