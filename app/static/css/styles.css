@@ -19,7 +19,11 @@ a {
 }
 .hoverable:hover {
     transition: all .1s ease-in-out;
-    color: #d9d9d9;
+    color: #d9d9d9!important;
+}
+.hoverable-glow:hover {
+    transition: all .1s ease-in-out;
+    color: #fff!important;
 }
 .text-brand {
     font-family: 'Montserrat-Alt1';
@@ -221,6 +225,14 @@ section {
     background-repeat: no-repeat;
     background-size: cover;
     opacity: 0.45;
+}
+.genre-link {
+    background: linear-gradient(to right, #f7b733, #fc4a1a);
+    color: #fff;
+    border-radius: .5rem;
+    padding: .3rem .5rem;
+    margin-right: .5rem;
+    line-height: 2.5rem;
 }
 
 /* Tabs */

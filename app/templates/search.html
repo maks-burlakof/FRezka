@@ -1,30 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
-   <div class="container my-4 my-sm-5">
-      {% with header_title='Поиск' %}
-         {% include 'includes/header.html' %}
-      {% endwith %}
-      <div class="row justify-content-center mb-5">
-         <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
-            {% include 'includes/search_form.html' %}
-         </div>
+   {% with header_title='Поиск' %}
+      {% include 'includes/header.html' %}
+   {% endwith %}
+   <div class="row justify-content-center mb-5">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
+         {% include 'includes/search_form.html' %}
       </div>
-      <div id="searchResultsRezka"></div>
-      <div id="searchPlaceholderRezka" class="row">
-         <div class="col-8">
-            <h4 class="placeholder-glow mb-2">
-               <span class="placeholder col-6"></span>
-            </h4>
-            <p class="placeholder-glow mb-3">
-               <span class="placeholder col-7"></span>
-               <span class="placeholder col-4"></span>
-               <span class="placeholder col-4"></span>
-               <span class="placeholder col-6"></span>
-               <span class="placeholder col-8"></span>
-            </p>
-            <a class="btn btn-primary disabled placeholder col-6" aria-disabled="true"></a>
-         </div>
+   </div>
+   <div id="searchResultsRezka"></div>
+   <div id="searchPlaceholderRezka" class="row">
+      <div class="col-8">
+         <h4 class="placeholder-glow mb-2">
+            <span class="placeholder col-6"></span>
+         </h4>
+         <p class="placeholder-glow mb-3">
+            <span class="placeholder col-7"></span>
+            <span class="placeholder col-4"></span>
+            <span class="placeholder col-4"></span>
+            <span class="placeholder col-6"></span>
+            <span class="placeholder col-8"></span>
+         </p>
+         <a class="btn btn-primary disabled placeholder col-6" aria-disabled="true"></a>
       </div>
+   </div>
+   <div class="mt-4">
+      <a class="hoverable" style="color: #F3A623; cursor: pointer" onclick="window.open(`https://kinopub.me/search/?do=search&subaction=search&q=${getURLParam(location.href, 'q')}`, '_blank');"><i class="fa-solid fa-magnifying-glass me-1"></i> Искать на HDRezka</a>
    </div>
 {% endblock %}
 {% block extrajs %}

@@ -143,25 +143,25 @@ async function getStream() {
       qualityOptionsHTML += `<option ${i+1 === qualitiesNames.length ? 'selected':''} value="${qualitiesNames[i]}">${qualitiesNames[i]}</option>`;
    }
 
-   document.querySelector('#movieSelectsQualityPlace').innerHTML = `
+   $('#movieSelectsQualityPlace').html(`
       <div id="movieSelectsQualityDiv" class="form-floating select-group-transparent mb-2">
          <select class="form-select" id="movieSelectsQuality" oninput="changeQualityResume()">${qualityOptionsHTML}</select>
          <label for="movieSelectsQuality">Качество</label>
       </div>
-   `;
+   `);
 
    changeQuality();
 
    isStreamUpdating = false;
    if (!isStreamUpdated) {
       isStreamUpdated = true;
-      document.querySelector('#streamUpdateIcon').remove();
+      $('#streamUpdateIcon').remove();
    }
 
    if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
          title: $('#movieTitle').text(),
-         artist: "FRezka",
+         artist: episodeId ? (seasonId ? `${seasonId} сезон, ${episodeId} серия` : `${episodeId} серия`) : 'FRezka',
          artwork: [
             { src: $('#movieCover').attr('src'), type: "image/png" },
          ]
@@ -313,11 +313,9 @@ async function fillInfo() {
    }
 
    // Create Kinopoisk button
-   /*let kinopoiskBtn = document.createElement('span');
-   kinopoiskBtn.innerHTML = `
-      <a id="movieKinopoiskBtn" target="_blank" class="btn bg-orange-g ms-2"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
-   `;
-   document.querySelector('#movieButtons').append(kinopoiskBtn);*/
+   $("#movieButtons").append(`
+      <a id="movieKinopoiskBtn" href="https://www.kinopoisk.ru/index.php?kp_query=${data.title}" target="_blank" class="btn bg-orange-g ms-2"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
+   `);
 }
 
 window.addEventListener("load", async function () {

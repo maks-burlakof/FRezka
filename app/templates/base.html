@@ -20,7 +20,22 @@
    {% block extrastyle %}{% endblock %}
 </head>
 <body>
-   {% block content %}{% endblock %}
+   {% block extracontent %}{% endblock %}
+   <div class="container my-4 my-sm-5">
+      {% block content %}{% endblock %}
+      {% block footer %}
+         <footer class="d-flex justify-content-between mt-5">
+            <div>
+               <p class="small text-white-50">FRezka <i class="fa-regular fa-copyright fa-rotate-180"></i> 2024</p>
+               <p class="small text-white-50">Распространяется под лицензией GPL-3.0</p>
+            </div>
+            <div class="text-nowrap ms-3">
+               <a class="text-white-50 fs-4 hoverable-glow me-2" href="https://github.com/maks-burlakof" target="_blank"><i class="fa-solid fa-circle-user"></i></a>
+               <a class="text-white-50 fs-4 hoverable-glow" href="https://github.com/maks-burlakof/FRezka" target="_blank"><i class="fa-brands fa-github"></i></a>
+            </div>
+         </footer>
+      {% endblock %}
+   </div>
    <div id="messagesContainer" aria-live="polite" aria-atomic="true" class="toast-notification"></div>
    <div id="modalPlace"></div>
    <script src="/static/js/vendor/bootstrap.bundle.min.js"></script>

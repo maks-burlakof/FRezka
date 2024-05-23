@@ -22,7 +22,7 @@ async function getSearchResults() {
    }
 
    if (data.length === 0) {
-      $('#searchResultsRezka').html('<p>Результатов не найдено</p>');
+      $('#searchResultsRezka').html('<p>Ничего не найдено</p>');
    } else {
       $('#searchResultsRezka').html(`<div class="row g-4">${resultsHTML}</div>`);
    }

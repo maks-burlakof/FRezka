@@ -1,69 +1,67 @@
 {% extends 'base.html' %}
 {% block content %}
-   <div class="container my-4 my-sm-5">
-      {% with header_title='Юзер' %}
-         {% include 'includes/header.html' %}
-      {% endwith %}
-      <div class="row g-md-5">
-         <div class="col-xl-4 col-lg-5 col-md-6 mb-5 mb-md-0">
-            <img class="offset-2 col-8 offset-sm-3 col-sm-6 offset-md-0 col-md-12 profile-pic mb-5 mb-md-4" src="static/img/downey_jr.png" alt="Profile picture">
-            <div class="rounded-4 p-4 bg-dark-g">
-               <div id="personalDateJoinedInfo"></div>
-               <button class="btn bg-red-g mt-2" type="button" onclick="logout()"><i class="fa-solid fa-right-from-bracket me-1"></i> Выйти</button>
+   {% with header_title='Юзер' %}
+      {% include 'includes/header.html' %}
+   {% endwith %}
+   <div class="row g-md-5">
+      <div class="col-xl-4 col-lg-5 col-md-6 mb-5 mb-md-0">
+         <img class="offset-2 col-8 offset-sm-3 col-sm-6 offset-md-0 col-md-12 profile-pic mb-5 mb-md-4" src="static/img/downey_jr.png" alt="Profile picture">
+         <div class="rounded-4 p-4 bg-dark-g">
+            <div id="personalDateJoinedInfo"></div>
+            <button class="btn bg-red-g hoverable mt-2" type="button" onclick="logout()"><i class="fa-solid fa-right-from-bracket me-1"></i> Выйти</button>
+         </div>
+      </div>
+      <div class="offset-lg-1 col-xl-7 col-lg-6 col-md-6">
+         <form id="personalForm">
+            <h3 class="mb-3"><i class="fa-solid fa-user-gear"></i> Личные данные</h3>
+            <div class="mb-3">
+               <label for="personalUsername" class="form-label">Имя пользователя</label>
+               <input type="text" name="username" class="form-control" id="personalUsername" minlength="4" maxlength="25" required>
             </div>
-         </div>
-         <div class="offset-lg-1 col-xl-7 col-lg-6 col-md-6">
-            <form id="personalForm">
-               <h3 class="mb-3"><i class="fa-solid fa-user-gear"></i> Личные данные</h3>
-               <div class="mb-3">
-                  <label for="personalUsername" class="form-label">Имя пользователя</label>
-                  <input type="text" name="username" class="form-control" id="personalUsername" minlength="4" maxlength="25" required>
+            <div class="alert alert-dark mb-3" role="alert">
+               <span class="d-flex justify-content-between align-items-center">
+                  Менять никнейм можно не чаще чем раз в месяц
+                  <i class="fa-solid fa-circle-info"></i>
+               </span>
+               <span id="personalUsernameLastChangedInfo"></span>
+            </div>
+            <div class="mb-3">
+               <label for="personalKinopoiskUsername" class="form-label">Кинопоиск</label>
+               <div class="input-group">
+                  <span class="input-group-text">https://mykp.ru/</span>
+                  <input type="text" name="kinopoisk_username" id="personalKinopoiskUsername" class="form-control">
+                  <button id="personalKinopoiskBtn" class="btn bg-orange-g" type="button" title="Перейти на Кинопоиск"><i class="fa-solid fa-up-right-from-square"></i></button>
                </div>
-               <div class="alert alert-dark mb-3" role="alert">
-                  <span class="d-flex justify-content-between align-items-center">
-                     Менять никнейм можно не чаще чем раз в месяц
-                     <i class="fa-solid fa-circle-info"></i>
-                  </span>
-                  <span id="personalUsernameLastChangedInfo"></span>
+            </div>
+            <div id="personalErrorContainer" class="d-none mb-3">
+               <div class="d-flex text-danger">
+                  <span class="fs-4 me-2"><i class="fa-solid fa-circle-exclamation"></i></span>
+                  <span class="small align-self-center" id="personalErrorText"></span>
                </div>
-               <div class="mb-3">
-                  <label for="personalKinopoiskUsername" class="form-label">Кинопоиск</label>
-                  <div class="input-group">
-                     <span class="input-group-text">https://mykp.ru/</span>
-                     <input type="text" name="kinopoisk_username" id="personalKinopoiskUsername" class="form-control">
-                     <button id="personalKinopoiskBtn" class="btn bg-orange-g" type="button" title="Перейти на Кинопоиск"><i class="fa-solid fa-up-right-from-square"></i></button>
-                  </div>
+            </div>
+            <div class="mt-3">
+               <button type="submit" class="btn bg-green-g me-2" title="Сохранить"><i class="fa-solid fa-check"></i></button>
+            </div>
+         </form>
+         <form id="securityForm">
+            <h3 class="mt-5 mb-3"><i class="fa-solid fa-user-lock"></i> Безопасность</h3>
+            <div class="mb-3">
+               <label for="securityPasswordOld" class="form-label">Сменить пароль</label>
+               <input type="password" name="password_old" class="form-control mb-3" id="securityPasswordOld" placeholder="Текущий пароль" minlength="5" maxlength="100" required>
+               <input type="password" name="password_new_1" class="form-control mb-3" id="securityPasswordNew1" placeholder="Новый пароль" minlength="5" maxlength="100" required>
+               <input type="password" name="password_new_2" class="form-control mb-3" id="securityPasswordNew2" placeholder="Повторите новый пароль" minlength="5" maxlength="100" required>
+            </div>
+            <div id="securityErrorContainer" class="d-none">
+               <div class="d-flex text-danger">
+                  <span class="fs-4 me-2"><i class="fa-solid fa-circle-exclamation"></i></span>
+                  <span class="small align-self-center" id="securityErrorText"></span>
                </div>
-               <div id="personalErrorContainer" class="d-none mb-3">
-                  <div class="d-flex text-danger">
-                     <span class="fs-4 me-2"><i class="fa-solid fa-circle-exclamation"></i></span>
-                     <span class="small align-self-center" id="personalErrorText"></span>
-                  </div>
-               </div>
-               <div class="mt-3">
-                  <button type="submit" class="btn bg-green-g me-2" title="Сохранить"><i class="fa-solid fa-check"></i></button>
-               </div>
-            </form>
-            <form id="securityForm">
-               <h3 class="mt-5 mb-3"><i class="fa-solid fa-user-lock"></i> Безопасность</h3>
-               <div class="mb-3">
-                  <label for="securityPasswordOld" class="form-label">Сменить пароль</label>
-                  <input type="password" name="password_old" class="form-control mb-3" id="securityPasswordOld" placeholder="Текущий пароль" minlength="5" maxlength="100" required>
-                  <input type="password" name="password_new_1" class="form-control mb-3" id="securityPasswordNew1" placeholder="Новый пароль" minlength="5" maxlength="100" required>
-                  <input type="password" name="password_new_2" class="form-control mb-3" id="securityPasswordNew2" placeholder="Повторите новый пароль" minlength="5" maxlength="100" required>
-               </div>
-               <div id="securityErrorContainer" class="d-none">
-                  <div class="d-flex text-danger">
-                     <span class="fs-4 me-2"><i class="fa-solid fa-circle-exclamation"></i></span>
-                     <span class="small align-self-center" id="securityErrorText"></span>
-                  </div>
-               </div>
-               <div class="mt-3">
-                  <button type="submit" class="btn bg-green-g me-2" title="Сохранить"><i class="fa-solid fa-check"></i></button>
-                  <button type="reset" class="btn bg-red-g" title="Сбросить"><i class="fa-solid fa-rotate-left"></i></button>
-               </div>
-            </form>
-         </div>
+            </div>
+            <div class="mt-3">
+               <button type="submit" class="btn bg-green-g me-2" title="Сохранить"><i class="fa-solid fa-check"></i></button>
+               <button type="reset" class="btn bg-red-g" title="Сбросить"><i class="fa-solid fa-rotate-left"></i></button>
+            </div>
+         </form>
       </div>
    </div>
 {% endblock %}

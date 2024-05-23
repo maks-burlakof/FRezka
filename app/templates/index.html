@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block content %}
+{% block extracontent %}
    <div class="container-fluid">
       <section id="movies-bg" class="py-5 px-lg-5">
          <div class="container position-relative">
@@ -13,26 +13,28 @@
                      {% include 'includes/search_form.html' %}
                   </div>
                </div>
+               <div class="mt-3" id="genresMediaTypes"></div>
             </div>
          </div>
       </section>
    </div>
-   <div class="container my-4 my-sm-5">
-      <div id="recentWatchedContainer" class="d-none mb-4 mb-lg-0">
-         <h1><span style="color: #F3A623;">Продолжить
-            <span class="swap-icons">
-               <i class="fa-solid fa-pause initial-icon mx-2" style="width: 1.5rem"></i>
-               <i class="fa-solid fa-play hover-icon mx-2" style="width: 1.5rem"></i>
-            </span>
+{% endblock %}
+{% block content %}
+   <div id="genresCollapses"></div>
+   <div id="recentWatchedContainer" class="d-none mb-4 mb-lg-0">
+      <h1><span style="color: #F3A623;">Продолжить
+         <span class="swap-icons">
+            <i class="fa-solid fa-pause initial-icon mx-2" style="width: 1.5rem"></i>
+            <i class="fa-solid fa-play hover-icon mx-2" style="width: 1.5rem"></i>
+         </span>
          </span>просмотр</h1>
-         <div id="recentWatched" class="py-4 py-lg-5 px-lg-5"></div>
-      </div>
-      <div>
-         <h1><span style="color: #F3A623;">Новые</span> фильмы · сериалы · аниме</h1>
-         <div id="latestRezka" class="py-3 py-lg-5 px-lg-5">
-            <div class="text-center">
-               <h1><i class="fa-solid fa-compact-disc fa-spin"></i></h1>
-            </div>
+      <div id="recentWatched" class="py-4 py-lg-5 px-lg-5"></div>
+   </div>
+   <div>
+      <h1><span style="color: #F3A623;">Новые</span> фильмы · сериалы · аниме</h1>
+      <div id="latestRezka" class="py-3 py-lg-5 px-lg-5">
+         <div class="text-center">
+            <h1><i class="fa-solid fa-compact-disc fa-spin"></i></h1>
          </div>
       </div>
    </div>

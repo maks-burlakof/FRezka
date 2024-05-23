@@ -1,71 +1,69 @@
 {% extends 'base.html' %}
 {% block content %}
-   <div class="container my-4 my-sm-5">
-      {% include 'includes/header.html' %}
-      <div class="row g-3 g-md-5 mb-5">
-         <div class="offset-2 offset-md-0 col-8 col-md-5 col-xl-4">
-            <div class="card border-0" style="background-color: transparent">
-               <svg id="movieCoverPlaceholder" class="bd-placeholder-img" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect></svg>
-               <img id="movieCover" src="" class="card-img-top">
-            </div>
+   {% include 'includes/header.html' %}
+   <div class="row g-3 g-md-5 mb-5">
+      <div class="offset-2 offset-md-0 col-8 col-md-5 col-xl-4">
+         <div class="card border-0" style="background-color: transparent">
+            <svg id="movieCoverPlaceholder" class="bd-placeholder-img" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect></svg>
+            <img id="movieCover" src="" class="card-img-top">
          </div>
-         <div class="col-12 col-md-7 col-xl-8">
-            <div id="movieInfoPlaceholder"></div>
-            <h1 class="mb-4" id="movieTitle">
+      </div>
+      <div class="col-12 col-md-7 col-xl-8">
+         <div id="movieInfoPlaceholder"></div>
+         <h1 class="mb-4" id="movieTitle">
+            <span class="placeholder-glow">
+               <span class="placeholder col-11"></span>
+               <span class="placeholder col-9"></span>
+            </span>
+         </h1>
+         <h2 class="mb-2" id="movieYear">
+            <span class="placeholder-glow">
+               <span class="placeholder col-2"></span>
+            </span>
+         </h2>
+         <h5 class="mb-4" style="color: #e1be0e"><i class="fa-solid fa-star me-2"></i>
+            <span id="movieRating">
                <span class="placeholder-glow">
-                  <span class="placeholder col-11"></span>
-                  <span class="placeholder col-9"></span>
+                  <span class="placeholder col-1"></span>
                </span>
-            </h1>
-            <h2 class="mb-2" id="movieYear">
-               <span class="placeholder-glow">
-                  <span class="placeholder col-2"></span>
+            </span>
+         </h5>
+         <div id="movieTimecodeInfo" class="mb-4 mb-lg-5 d-none"></div>
+         <div id="movieButtons" class="d-flex align-items-center text-nowrap">
+            <button id="movieIsWatchedBtn" class="fs-6 btn film-not-watched me-1" disabled>
+               <span class="swap-icons">
+                  <i class="fa-solid fa-eye initial-icon" style="width: 1.5rem"></i>
+                  <i class="fa-solid fa-eye-slash hover-icon" style="width: 1.5rem"></i>
                </span>
-            </h2>
-            <h5 class="mb-4" style="color: #e1be0e"><i class="fa-solid fa-star me-2"></i>
-               <span id="movieRating">
-                  <span class="placeholder-glow">
-                     <span class="placeholder col-1"></span>
-                  </span>
-               </span>
-            </h5>
-            <div id="movieTimecodeInfo" class="mb-4 mb-lg-5 d-none"></div>
-            <div id="movieButtons" class="d-flex align-items-center text-nowrap">
-               <button id="movieIsWatchedBtn" class="fs-6 btn film-not-watched me-1" disabled>
-                  <span class="swap-icons">
-                     <i class="fa-solid fa-eye initial-icon" style="width: 1.5rem"></i>
-                     <i class="fa-solid fa-eye-slash hover-icon" style="width: 1.5rem"></i>
-                  </span>
-               </button>
-               <i class="fa-solid fa-circle small mx-3" style="color: #949494;"></i>
-               <a id="movieHdRezkaBtn" target="_blank" class="btn bg-violet-g"><i class="fa-solid fa-film me-1"></i> HDRezka</a>
-            </div>
+            </button>
+            <i class="fa-solid fa-circle small mx-3" style="color: #949494;"></i>
+            <a id="movieHdRezkaBtn" target="_blank" class="btn bg-violet-g"><i class="fa-solid fa-film me-1"></i> HDRezka</a>
          </div>
       </div>
-      <div class="mb-5">
-         <h2 class="mb-3"><i class="fa-solid fa-play me-2"></i> Смотреть</h2>
-         <div class="d-flex align-items-center flex-wrap mb-2">
-            <div id="movieSelects" class="d-flex flex-wrap align-items-center"></div>
-            <div id="streamUpdateIconPlace" class="d-flex align-items-center"></div>
-            <div id="movieSelectsQualityPlace" class="d-flex align-items-center"></div>
-         </div>
-         <div class="row mb-2">
-            <div class="col-12">
-               <video id="moviePlayer" autoplay controls class="w-100">
-                  <source id="moviePlayerVideoSrc" src="" type='video/mp4'>
-                  Воспроизведение не поддерживается. Скачайте видео.
-               </video>
-            </div>
-         </div>
-         <div class="d-flex">
-            <a id="movieDownloadBtn" class="btn bg-dark-g me-2"><i class="fa-solid fa-download me-1"></i> Скачать</a>
-            <a id="movieCopyBtn" style="cursor: pointer;" class="btn bg-dark-g"><i class="fa-regular fa-copy"></i></a>
+   </div>
+   <div class="mb-5">
+      <h2 class="mb-3"><i class="fa-solid fa-play me-2"></i> Смотреть</h2>
+      <div class="d-flex align-items-center flex-wrap mb-2">
+         <div id="movieSelects" class="d-flex flex-wrap align-items-center"></div>
+         <div id="streamUpdateIconPlace" class="d-flex align-items-center"></div>
+         <div id="movieSelectsQualityPlace" class="d-flex align-items-center"></div>
+      </div>
+      <div class="row mb-2">
+         <div class="col-12">
+            <video id="moviePlayer" autoplay controls class="w-100">
+               <source id="moviePlayerVideoSrc" src="" type='video/mp4'>
+               Воспроизведение не поддерживается. Скачайте видео.
+            </video>
          </div>
       </div>
-      <div id="movieOtherParts" class="d-none">
-         <h2 class="mb-3"><i class="fa-solid fa-film me-2"></i> Другие части</h2>
-         <div id="movieOtherPartsContent" class="d-flex flex-column"></div>
+      <div class="d-flex">
+         <a id="movieDownloadBtn" class="btn bg-dark-g me-2"><i class="fa-solid fa-download me-1"></i> Скачать</a>
+         <a id="movieCopyBtn" style="cursor: copy;" class="btn bg-dark-g"><i class="fa-regular fa-copy"></i></a>
       </div>
+   </div>
+   <div id="movieOtherParts" class="d-none">
+      <h2 class="mb-3"><i class="fa-solid fa-film me-2"></i> Другие части</h2>
+      <div id="movieOtherPartsContent" class="d-flex flex-column"></div>
    </div>
 {% endblock %}
 {% block extrajs %}
