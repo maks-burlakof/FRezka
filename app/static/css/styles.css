@@ -49,6 +49,15 @@ section {
     border-color: transparent;
     box-shadow: none;
 }
+.pagination {
+    background: linear-gradient(to right, #f7b733, #fc4a1a);
+    border-radius: 1rem;
+}
+.pagination a {
+    background: unset;
+    color: #fff;
+    border: 0;
+}
 
 /* Buttons, backgrounds */
 .bg-orange-g {
@@ -86,11 +95,23 @@ section {
     color: #fff;
     border: 0;
 }
+.bg-gray {
+    background-color: #121212;
+    color: #fff;
+}
+.shadow-green {
+    box-shadow: 3px 5px 35px -5px #25a08d;
+}
 
 /* Movie card */
 .movie-card {
     border: 0;
     background-color: #1e1b26;
+    transition: .5s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.6s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);
+}
+.movie-card:hover{
+    transform: scale(1.1);
+    box-shadow: 0 0 30px 40px rgba(0,0,0,0.44);
 }
 .movie-card img {
     border-radius: .8rem;

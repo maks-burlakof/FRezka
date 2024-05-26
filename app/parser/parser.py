@@ -27,6 +27,12 @@ class Parser:
 
     def _get_soup(self, url: str):
         page = requests.get(url, headers=self.HEADERS)
+        if page.history:
+            status_code = page.history[0].status_code
+            status_codes_errors = {
+                301: 'Error 301: Moved Permanently',
+            }
+            raise requests.exceptions.RequestException(status_codes_errors.get(status_code, f'Error {status_code}'))
         soup = BeautifulSoup(page.text, "html.parser")
         return soup
 
@@ -54,11 +60,26 @@ class Parser:
                 'country': tags[1],
                 'genre': tags[2],
             })
-        return response
 
-    def search(self, q: str):
-        url = self.DOMAIN + 'search/?do=search&subaction=search&q=' + q
-        soup = self._get_soup(url)
+        navigation = soup.find('div', class_='b-navigation')
+        page = 1
+        pages = 1
+        if navigation:
+            page = int(next(filter(lambda s: s.text.strip().isdigit(), navigation.findAll('span'))).text)
+            pages = int(next(filter(lambda s: s.text.strip().isdigit(), reversed(navigation.findAll('a')))).text)
+            pages = pages if pages > page else page
+        return {
+            'page': page,
+            'pages': pages,
+            'content': response,
+        }
+
+    def search(self, q: str, page: int = 1):
+        soup = self._get_soup(self.DOMAIN + f'search/?do=search&subaction=search&page={page}&q={q}')
+        return self._get_content_inline_items(soup, {'class_': 'b-content__inline_items'})
+
+    def collection(self, url: str, page: int = 1):
+        soup = self._get_soup(self.DOMAIN + url + f'page/{page}/')
         return self._get_content_inline_items(soup, {'class_': 'b-content__inline_items'})
 
     def film_info(self, url: str):

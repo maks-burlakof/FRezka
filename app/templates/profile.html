@@ -3,16 +3,16 @@
    {% with header_title='Юзер' %}
       {% include 'includes/header.html' %}
    {% endwith %}
-   <div class="row g-md-5">
-      <div class="col-xl-4 col-lg-5 col-md-6 mb-5 mb-md-0">
+   <div class="row g-4 g-md-5">
+      <div class="col-xl-4 col-lg-5 col-md-6 mb-md-0">
          <img class="offset-2 col-8 offset-sm-3 col-sm-6 offset-md-0 col-md-12 profile-pic mb-5 mb-md-4" src="static/img/downey_jr.png" alt="Profile picture">
-         <div class="rounded-4 p-4 bg-dark-g">
+         <div class="rounded-5 p-4 bg-gray shadow-green">
             <div id="personalDateJoinedInfo"></div>
             <button class="btn bg-red-g hoverable mt-2" type="button" onclick="logout()"><i class="fa-solid fa-right-from-bracket me-1"></i> Выйти</button>
          </div>
       </div>
       <div class="offset-lg-1 col-xl-7 col-lg-6 col-md-6">
-         <form id="personalForm">
+         <form id="personalForm" class="rounded-5 bg-gray shadow-green p-4">
             <h3 class="mb-3"><i class="fa-solid fa-user-gear"></i> Личные данные</h3>
             <div class="mb-3">
                <label for="personalUsername" class="form-label">Имя пользователя</label>
@@ -43,8 +43,8 @@
                <button type="submit" class="btn bg-green-g me-2" title="Сохранить"><i class="fa-solid fa-check"></i></button>
             </div>
          </form>
-         <form id="securityForm">
-            <h3 class="mt-5 mb-3"><i class="fa-solid fa-user-lock"></i> Безопасность</h3>
+         <form id="securityForm" class="rounded-5 bg-gray shadow-green p-4 mt-4">
+            <h3 class="mb-3"><i class="fa-solid fa-user-lock"></i> Безопасность</h3>
             <div class="mb-3">
                <label for="securityPasswordOld" class="form-label">Сменить пароль</label>
                <input type="password" name="password_old" class="form-control mb-3" id="securityPasswordOld" placeholder="Текущий пароль" minlength="5" maxlength="100" required>

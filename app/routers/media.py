@@ -13,13 +13,27 @@ parser = Parser()
 
 
 @router.get('/search')
-def get_search_results(q: str):
-    data = parser.search(q)
+def search(q: str, p: Optional[int] = 1):
+    try:
+        data = parser.search(q=q, page=p)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+    return data
+
+
+@router.get('/collection')
+def collection(u: str, p: Optional[int] = 1):
+    try:
+        data = parser.collection(url=u, page=p)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
     return data
 
 
 @router.get('/info')
-def get_film_info(u: Annotated[str, Query(pattern='\w.html$')], user=Depends(get_current_user)):
+def film_info(u: Annotated[str, Query(pattern='\w.html$')], user=Depends(get_current_user)):
     try:
         data = parser.film_info(url=u)
     except Exception as e:
@@ -29,7 +43,7 @@ def get_film_info(u: Annotated[str, Query(pattern='\w.html$')], user=Depends(get
 
 
 @router.get('/stream')
-def get_stream(u: Annotated[str, Query(pattern='\w.html$')], t: int, s: int = None, e: int = None, user=Depends(get_current_user), db: Session = Depends(get_db)):
+def stream(u: Annotated[str, Query(pattern='\w.html$')], t: int, s: int = None, e: int = None, user=Depends(get_current_user), db: Session = Depends(get_db)):
     try:
         streams, movie_data = parser.stream(url=u, translation=t, season=s, episode=e)
     except Exception as e:
@@ -45,13 +59,13 @@ def get_stream(u: Annotated[str, Query(pattern='\w.html$')], t: int, s: int = No
 
 
 @router.get('/latest')
-def get_latest_films():
+def latest_movies():
     data = parser.latest_movies()
     return data
 
 
 @router.get('/timecodes', response_model=List[schemes.TimecodeMovieOut])
-def get_movies_timecodes(user=Depends(get_current_user), db: Session = Depends(get_db)):
+def timecodes_and_movies(user=Depends(get_current_user), db: Session = Depends(get_db)):
     recent_watched = db.query(models.Timecode, models.Movie).join(
         models.Movie, models.Timecode.movie_id == models.Movie.id
     ).filter(
@@ -62,7 +76,7 @@ def get_movies_timecodes(user=Depends(get_current_user), db: Session = Depends(g
 
 
 @router.get('/timecode', response_model=schemes.TimecodeMovieOut)
-def get_movie_timecode(id: Optional[int] = None, u: Optional[str] = None, user=Depends(get_current_user), db: Session = Depends(get_db)):
+def timecode_and_movie(id: Optional[int] = None, u: Optional[str] = None, user=Depends(get_current_user), db: Session = Depends(get_db)):
     if not id and not u:
         return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='You must provide either movie_id or rezka_url')
 
@@ -80,30 +94,30 @@ def get_movie_timecode(id: Optional[int] = None, u: Optional[str] = None, user=D
 
 
 @router.post('/timecode', response_model=schemes.TimecodeOut)
-def create_update_timecode(updated_timecode: schemes.TimecodeCreate, user=Depends(get_current_user), db: Session = Depends(get_db)):
-    timecode_query = db.query(models.Timecode).filter(models.Timecode.movie_id == updated_timecode.movie_id and models.Timecode.user_id == user.id)
-    timecode = timecode_query.first()
+def timecode(updated_tcode: schemes.TimecodeCreate, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    tcode_query = db.query(models.Timecode).filter(models.Timecode.movie_id == updated_tcode.movie_id and models.Timecode.user_id == user.id)
+    tcode = tcode_query.first()
 
-    if not timecode:
-        new_timecode = models.Timecode(**updated_timecode.model_dump(), user_id=user.id)
-        db.add(new_timecode)
+    if not tcode:
+        new_tcode = models.Timecode(**updated_tcode.model_dump(), user_id=user.id)
+        db.add(new_tcode)
         db.commit()
-        db.refresh(new_timecode)
-        return new_timecode
+        db.refresh(new_tcode)
+        return new_tcode
     else:
-        timecode_query.update(updated_timecode.model_dump(), synchronize_session=False)
+        tcode_query.update(updated_tcode.model_dump(), synchronize_session=False)
         db.commit()
-        return timecode_query.first()
+        return tcode_query.first()
 
 
 @router.patch('/timecode', response_model=schemes.TimecodeOut)
-def update_timecode(updated_timecode: schemes.TimecodeUpdate, user=Depends(get_current_user), db: Session = Depends(get_db)):
-    timecode_query = db.query(models.Timecode).filter(models.Timecode.movie_id == updated_timecode.movie_id and models.Timecode.user_id == user.id)
-    timecode = timecode_query.first()
+def timecode(updated_tcode: schemes.TimecodeUpdate, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    tcode_query = db.query(models.Timecode).filter(models.Timecode.movie_id == updated_tcode.movie_id and models.Timecode.user_id == user.id)
+    tcode = tcode_query.first()
 
-    if not timecode:
+    if not tcode:
         return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Timecode for the movie not found')
     else:
-        timecode_query.update(updated_timecode.model_dump(exclude_unset=True, exclude_none=True), synchronize_session=False)
+        tcode_query.update(updated_tcode.model_dump(exclude_unset=True, exclude_none=True), synchronize_session=False)
         db.commit()
-        return timecode_query.first()
+        return tcode_query.first()

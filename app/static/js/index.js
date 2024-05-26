@@ -8,10 +8,10 @@ async function getLatestMovies() {
 
    // Latest
    let resultsHTML = '';
-   for (let movie of data.latest) {
+   for (let movie of data.latest.content) {
       resultsHTML += getHTMLMovieCard(removeDomain(movie['url']), movie['cover_url'], movie['title'], movie['year'], movie['country'], movie['genre']);
    }
-   if (data.latest.length !== 0) {
+   if (data.latest.content.length !== 0) {
       $('#latestRezka').html(`<div class="row g-4">${resultsHTML}</div>`);
    }
 
@@ -19,7 +19,7 @@ async function getLatestMovies() {
    for (let mediaType of Object.keys(data.genres)) {
       let linksHTML = '';
       for (let genre of Object.keys(data.genres[mediaType])) {
-         linksHTML += `<div class="col-6 col-md-4"><a class="lh-1 mb-1 hoverable" href="/collections?u=${data.genres[mediaType][genre]}">${genre}</a></div>`;
+         linksHTML += `<div class="col-6 col-md-4"><a class="lh-1 mb-1 hoverable" href="/collection?u=${data.genres[mediaType][genre]}">${genre}</a></div>`;
       }
 
       $('#genresMediaTypes').append(`
@@ -27,7 +27,7 @@ async function getLatestMovies() {
       `);
       $('#genresCollapses').append(`
          <div class="collapse collapse-unique" id="collapse-${mediaType}">
-            <div class="mb-5 text-start">
+            <div class="bg-gray rounded-5 p-4 mb-4 mb-md-5 text-start">
                <div class="mb-3">
                   <h1 class="mb-0" style="color: #F3A623;">${mediaType}</h1>
                   <h3>· Подборки</h3>

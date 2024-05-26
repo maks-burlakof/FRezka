@@ -21,6 +21,37 @@ function getHTMLMovieCard(url, cover, title, year, country, genre, timecode = nu
    `;
 }
 
+function createPagination(url, page, totalPages) {
+   if (totalPages === 1) {
+      return;
+   }
+   $('#paginationTextContainer').html(`
+      <h6>Страница ${page} из ${totalPages}</h6>
+   `);
+   let forloopStartFrom = (page-2 > 1) ? page-2 : 1;
+   let forloopEndTo = (page+2 < totalPages) ? page+2 : totalPages;
+   $('#paginationContainer').html(`
+      <nav aria-label="Навигация" class="d-flex justify-content-center">
+         <ul class="pagination mb-2">
+            ${page > 1 ? `
+               <li class="page-item">
+                  <a class="page-link" href="${url}&p=${page-1}"><i class="fa-solid fa-angle-left"></i></a>
+               </li>
+            ` : ''}
+            ${Array.from({length: forloopEndTo}, (_, i) => `
+               <li class="page-item"><a class="page-link ${(page === i+forloopStartFrom) ? 'active' : ''}" href="${url}&p=${i+forloopStartFrom}">${i+forloopStartFrom}</a></li>
+            `).join('')}
+            ${page < totalPages ? `
+               <li class="page-item">
+                  <a class="page-link" href="${url}&p=${page+1}"><i class="fa-solid fa-angle-right"></i></a>
+               </li>
+            ` : ''}
+         </ul>
+      </nav>
+      <p class="small text-white-50 text-center">Страница ${page} из ${totalPages}</p>
+   `);
+}
+
 function removeDomain(url) {
    return url.replace(/^.*\/\/[^\/]+/, '').slice(1);
 }
@@ -29,6 +60,12 @@ function getURLParam(url, param) {
    let urlObj = new URL(url);
    let searchParams = urlObj.searchParams;
    return searchParams.get(param);
+}
+
+function removeURLParam(url, param) {
+   let urlObj = new URL(url);
+   urlObj.searchParams.delete(param);
+   return urlObj.toString();
 }
 
 function makeNextURLParam(location) {

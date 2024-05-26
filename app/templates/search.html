@@ -27,6 +27,7 @@
    <div class="mt-4">
       <a class="hoverable" style="color: #F3A623; cursor: pointer" onclick="window.open(`https://kinopub.me/search/?do=search&subaction=search&q=${getURLParam(location.href, 'q')}`, '_blank');"><i class="fa-solid fa-magnifying-glass me-1"></i> Искать на HDRezka</a>
    </div>
+   <div id="paginationContainer" class="mt-4"></div>
 {% endblock %}
 {% block extrajs %}
    <script src="/static/js/search.js?v=1.2"></script>
