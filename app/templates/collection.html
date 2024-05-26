@@ -1,15 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-   {% with header_title='Поиск' %}
+   {% with header_title='Подборка' %}
       {% include 'includes/header.html' %}
    {% endwith %}
-   <div class="row justify-content-center mb-5">
-      <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
-         {% include 'includes/search_form.html' %}
-      </div>
-   </div>
-   <div id="searchResultsRezka"></div>
-   <div id="searchPlaceholderRezka" class="row">
+   <div id="collectionNameContainer" class="mb-4 mb-md-5"></div>
+   <div id="collectionResults">
       <div class="col-8">
          <h4 class="placeholder-glow mb-2">
             <span class="placeholder col-6"></span>
@@ -24,14 +19,11 @@
          <a class="btn btn-primary disabled placeholder col-6" aria-disabled="true"></a>
       </div>
    </div>
-   <div class="mt-4">
-      <a class="hoverable" style="color: #F3A623; cursor: pointer" onclick="window.open(`https://kinopub.me/search/?do=search&subaction=search&q=${getURLParam(location.href, 'q')}`, '_blank');"><i class="fa-solid fa-magnifying-glass me-1"></i> Искать на HDRezka</a>
-   </div>
    <div id="paginationContainer" class="mt-4"></div>
 {% endblock %}
 {% block extrajs %}
    <script src="/static/js/search.js?v=1.2"></script>
    <script>
-      getSearchResults();
+      getCollectionResults();
    </script>
 {% endblock %}

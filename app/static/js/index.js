@@ -19,7 +19,7 @@ async function getLatestMovies() {
    for (let mediaType of Object.keys(data.genres)) {
       let linksHTML = '';
       for (let genre of Object.keys(data.genres[mediaType])) {
-         linksHTML += `<div class="col-6 col-md-4"><a class="lh-1 mb-1 hoverable" href="/collection?u=${data.genres[mediaType][genre]}">${genre}</a></div>`;
+         linksHTML += `<div class="col-6 col-md-4"><a class="lh-1 mb-1 hoverable" href="/collection?u=${data.genres[mediaType][genre]}&genre=${genre}&type=${mediaType}">${genre}</a></div>`;
       }
 
       $('#genresMediaTypes').append(`

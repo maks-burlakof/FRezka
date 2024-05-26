@@ -38,7 +38,7 @@ function createPagination(url, page, totalPages) {
                   <a class="page-link" href="${url}&p=${page-1}"><i class="fa-solid fa-angle-left"></i></a>
                </li>
             ` : ''}
-            ${Array.from({length: forloopEndTo}, (_, i) => `
+            ${Array.from({length: forloopEndTo-forloopStartFrom+1}, (_, i) => `
                <li class="page-item"><a class="page-link ${(page === i+forloopStartFrom) ? 'active' : ''}" href="${url}&p=${i+forloopStartFrom}">${i+forloopStartFrom}</a></li>
             `).join('')}
             ${page < totalPages ? `

@@ -85,12 +85,12 @@ section {
     color: #fff;
     border: 0;
 }
-.bg-red-g, .film-not-watched {
+.bg-red-g {
     background: linear-gradient(to right, #fa3a3a, #c2010a);
     color: #fff;
     border: 0;
 }
-.bg-green-g, .film-watched {
+.bg-green-g {
     background: linear-gradient(to right, #a8e063, #56ab2f);
     color: #fff;
     border: 0;
@@ -187,6 +187,9 @@ section {
 }
 .select-group-transparent label:after {
     background-color: transparent!important;
+}
+.film-watched i {
+    color: #67de01;
 }
 
 /* Search */

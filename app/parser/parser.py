@@ -42,7 +42,7 @@ class Parser:
             return []
         results = content.findAll('div', 'b-content__inline_item')
 
-        response = []
+        content_response = []
         for result in results:
             info_div = result.find('div', class_='b-content__inline_item-link')
             cover_div = result.find('div', class_='b-content__inline_item-cover')
@@ -51,7 +51,7 @@ class Parser:
             cover_url = cover_div.find('img')['src']
             type_str = cover_div.find('i', 'entity').text
 
-            response.append({
+            content_response.append({
                 'title': title.text,
                 'url': title['href'],
                 'cover_url': cover_url,
@@ -68,11 +68,20 @@ class Parser:
             page = int(next(filter(lambda s: s.text.strip().isdigit(), navigation.findAll('span'))).text)
             pages = int(next(filter(lambda s: s.text.strip().isdigit(), reversed(navigation.findAll('a')))).text)
             pages = pages if pages > page else page
-        return {
+
+        response = {
             'page': page,
             'pages': pages,
-            'content': response,
+            'content': content_response,
         }
+
+        filters = soup.find('ul', class_='b-content__main_filters')
+        if filters:
+            response['filters'] = dict((
+                filter_item['href'].split('=')[-1], filter_item.text
+            ) for filter_item in filters.findAll('a', class_='b-content__main_filters_link'))
+
+        return response
 
     def search(self, q: str, page: int = 1):
         soup = self._get_soup(self.DOMAIN + f'search/?do=search&subaction=search&page={page}&q={q}')

@@ -31,6 +31,14 @@ def search(request: Request):
     return templates.TemplateResponse('search.html', context)
 
 
+@router.get('/collection')
+def collections(request: Request):
+    context = {
+        'request': request,
+    }
+    return templates.TemplateResponse('collection.html', context)
+
+
 @router.get('/film')
 def film_page(request: Request):
     context = {

@@ -87,7 +87,8 @@ async function updateUserTimecode() {
 
       movieIsWatched = data['is_watched'];
       if (data['is_watched'] && !$('#movieIsWatchedBtn').hasClass('film-watched')) {
-         $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
+         $('#movieIsWatchedBtn').addClass('film-watched');
+         $("#movieIsWatchedBtn").html('<i class="fa-solid fa-circle-check"></i>');
          showMessage('success', '<i class="fa-solid fa-check me-1"></i> Фильм просмотрен');
       }
    }
@@ -226,7 +227,8 @@ async function fillInfo() {
       movieIsWatched = dataTimecode.is_watched;
       $('#movieIsWatchedBtn').removeAttr('disabled');
       if (dataTimecode.is_watched) {
-         $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
+         $('#movieIsWatchedBtn').addClass('film-watched');
+         $("#movieIsWatchedBtn").html('<i class="fa-solid fa-circle-check"></i>');
       }
    }
 
@@ -314,17 +316,12 @@ async function fillInfo() {
 
    // Create Kinopoisk button
    $("#movieButtons").append(`
-      <a id="movieKinopoiskBtn" href="https://www.kinopoisk.ru/index.php?kp_query=${data.title}" target="_blank" class="btn bg-orange-g ms-2"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
+      <a id="movieKinopoiskBtn" href="https://www.kinopoisk.ru/index.php?kp_query=${data.title}" target="_blank" class="btn bg-orange-g"><i class="fa-solid fa-play me-1"></i> Кинопоиск</a>
    `);
 }
 
 window.addEventListener("load", async function () {
    $("#movieIsWatchedBtn").click(async function(){
-      console.log(JSON.stringify({
-         'movie_id': movieId,
-         'is_watched': !movieIsWatched,
-      }));
-
       let [response, data] = await fetchRequest('/api/media/timecode', true, 'PATCH', JSON.stringify({
          'movie_id': movieId,
          'is_watched': !movieIsWatched,
@@ -334,10 +331,12 @@ window.addEventListener("load", async function () {
          showMessage('success', '<i class="fa-solid fa-check me-1"></i> Сохранено');
 
          movieIsWatched = data.is_watched;
-         if (data.is_watched && $('#movieIsWatchedBtn').hasClass('film-not-watched')) {
-            $('#movieIsWatchedBtn').removeClass('film-not-watched').addClass('film-watched');
+         if (data.is_watched && !$('#movieIsWatchedBtn').hasClass('film-watched')) {
+            $('#movieIsWatchedBtn').addClass('film-watched');
+            $("#movieIsWatchedBtn").html('<i class="fa-solid fa-circle-check"></i>');
          } else if (!data.is_watched && $('#movieIsWatchedBtn').hasClass('film-watched')) {
-            $('#movieIsWatchedBtn').removeClass('film-watched').addClass('film-not-watched');
+            $('#movieIsWatchedBtn').removeClass('film-watched');
+            $("#movieIsWatchedBtn").html('<i class="fa-solid fa-circle-plus"></i>');
          }
       }
    });

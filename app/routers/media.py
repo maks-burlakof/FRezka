@@ -116,7 +116,7 @@ def timecode(updated_tcode: schemes.TimecodeUpdate, user=Depends(get_current_use
     tcode = tcode_query.first()
 
     if not tcode:
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Timecode for the movie not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Timecode for the movie not found')
     else:
         tcode_query.update(updated_tcode.model_dump(exclude_unset=True, exclude_none=True), synchronize_session=False)
         db.commit()
