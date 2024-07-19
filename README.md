@@ -21,5 +21,8 @@ Browse your recently watched series and movies on dedicated page.
 
 ## 📄 Docs
 
-- [INSTALL.md](INSTALL.md)  
-- [DEPLOY.md](DEPLOY.md)
+- [INSTALL.md](install/INSTALL.md)
+    - Auto-install and deploy
+    - Manual installation
+- [DEPLOY.md](install/DEPLOY.md)
+    - Manual deploy

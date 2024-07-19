@@ -1,4 +1,4 @@
-# Deployment
+# Deployment. Manual installation
 
 Read the [INSTALL.md](INSTALL.md) file before.
 
@@ -76,7 +76,7 @@ curl --unix-socket /root/FRezka/run/gunicorn.sock localhost
 ```
 
 _If you need to restart process:_  
-`sudo supervisorctl restart fastapi-app`
+`sudo supervisorctl restart frezka`
 
 ## Nginx
 
